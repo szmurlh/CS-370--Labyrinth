@@ -1,15 +1,11 @@
-import org.lwjgl.*;
-import org.lwjgl.glfw.*;
-import org.lwjgl.opengl.*;
-import org.lwjgl.system.*;
-
-import java.nio.*;
-
-import static org.lwjgl.glfw.Callbacks.*;
+import static org.lwjgl.glfw.Callbacks.glfwFreeCallbacks;
 import static org.lwjgl.glfw.GLFW.*;
 import static org.lwjgl.opengl.GL11.*;
-import static org.lwjgl.system.MemoryStack.*;
-import static org.lwjgl.system.MemoryUtil.*;
+import static org.lwjgl.system.MemoryUtil.NULL;
+
+import org.lwjgl.glfw.GLFWErrorCallback;
+import org.lwjgl.glfw.GLFWVidMode;
+import org.lwjgl.opengl.GL;
 
 public class Driver {
 	
@@ -89,6 +85,9 @@ public class Driver {
 		// creates the GLCapabilities instance and makes the OpenGL
 		// bindings available for use.
 		GL.createCapabilities();
+		
+		// Enables textures to be used
+		glEnable(GL_TEXTURE_2D);
 
 		// Set the clear color
 		glClearColor((float)Math.random(), (float)Math.random(), (float)Math.random(), 0.0f);
@@ -96,13 +95,32 @@ public class Driver {
 		// Run the rendering loop until the user has attempted to close
 		// the window or has pressed the ESCAPE key.
 		while ( !glfwWindowShouldClose(window) ) {
-			glClear(GL_COLOR_BUFFER_BIT | GL_DEPTH_BUFFER_BIT); // clear the framebuffer
-
-			glfwSwapBuffers(window); // swap the color buffers
-
 			// Poll for window events. The key callback above will only be
 			// invoked during this call.
 			glfwPollEvents();
+			
+			glClear(GL_COLOR_BUFFER_BIT | GL_DEPTH_BUFFER_BIT); // clear the framebuffer
+			
+			// Draw texture
+			Texture tex = Texture.loadTexture("./resources/tile_cross.png");
+			tex.bind();
+			
+			glBegin(GL_QUADS);
+				glTexCoord2f(0, 0);
+				glVertex2f(-0.5f, 0.5f);
+
+				glTexCoord2f(0, 1);
+				glVertex2f(0.5f, 0.5f);
+
+				glTexCoord2f(1, 1);
+				glVertex2f(0.5f, -0.5f);
+
+				glTexCoord2f(1, 0);
+				glVertex2f(-0.5f, -0.5f);
+			glEnd();
+			
+			glfwSwapBuffers(window); // swap the color buffers
+			
 		}
 	}
 
