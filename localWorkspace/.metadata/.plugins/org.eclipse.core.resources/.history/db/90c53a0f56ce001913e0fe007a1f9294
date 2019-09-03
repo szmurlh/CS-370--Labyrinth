@@ -1,0 +1,30 @@
+import java.awt.geom.AffineTransform;
+import java.awt.image.AffineTransformOp;
+import java.awt.image.BufferedImage;
+
+public class SpriteSheet {
+	
+	private BufferedImage image;
+	
+	public SpriteSheet (BufferedImage ss) {
+		this.image = ss;
+	}
+	
+	public BufferedImage getImage(int x, int y, int width, int height) {
+		BufferedImage img = image.getSubimage(width*x, height*y, width-1, height-1);
+		img = scaleImage(img);
+		return img;
+	}
+	
+	public BufferedImage scaleImage(BufferedImage before) {
+		int w = before.getWidth();
+		int h = before.getHeight();
+		BufferedImage after = new BufferedImage(w, h, BufferedImage.TYPE_INT_RGB);
+		AffineTransform at = new AffineTransform();
+		at.scale(Game.SCALE, Game.SCALE);
+		AffineTransformOp operation = new AffineTransformOp(at, AffineTransformOp.TYPE_BILINEAR);
+		after = operation.filter(before, after);
+		return after;
+	}
+	
+}

@@ -1,0 +1,27 @@
+import java.awt.Graphics;
+import java.awt.image.BufferedImage;
+
+public class Tile {
+	
+	private double x;
+	private double y;
+	
+	private BufferedImage tile;
+	
+	public Tile (double x, double y, Game game) {
+		this.x = x;
+		this.y = y;
+		
+		SpriteSheet ss = new SpriteSheet(game.getSpriteSheet());
+		tile = ss.getImage((int)(Math.random()*10+1), (int)(Math.random()*3+1), 216, 216);
+	}
+	
+	public void tick() {
+		
+	}
+	
+	public void render(Graphics g) {
+		g.drawImage(tile, (int)x, (int)y, null);
+	}
+	
+}
