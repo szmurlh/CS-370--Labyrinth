@@ -7,6 +7,10 @@ public class Board {
 	private double x;
 	private double y;
 	
+	public double hd = 0;
+	public double td = 0;
+	public double vd = 0;
+	
 	public static final int SIZE = 7;
 	
 	Tile[] tileArray;
@@ -51,15 +55,19 @@ public class Board {
 		board = new Tile[SIZE][SIZE];
 		board[0][0] = new Tile(0, 0, 3, game);
 		board[0][2] = new Tile(0, 0, 22, game);
+		board[0][2].rotate(1);
 		board[0][4] = new Tile(0, 0, 7, game);
+		board[0][4].rotate(1);
 		board[0][6] = new Tile(0, 0, 1, game);
 		board[2][0] = new Tile(0, 0, 6, game);
+		board[2][0].rotate(2);
 		board[2][2] = new Tile(0, 0, 11, game);
 		board[2][2].rotate(1);
 		board[2][4] = new Tile(0, 0, 18, game);
 		board[2][4].rotate(0);
 		board[2][6] = new Tile(0, 0, 10, game);
 		board[4][0] = new Tile(0, 0, 23, game);
+		board[4][0].rotate(2);
 		board[4][2] = new Tile(0, 0, 20, game);
 		board[4][2].rotate(2);
 		board[4][4] = new Tile(0, 0, 16, game);
@@ -67,7 +75,9 @@ public class Board {
 		board[4][6] = new Tile(0, 0, 15, game);
 		board[6][0] = new Tile(0, 0, 2, game);
 		board[6][2] = new Tile(0, 0, 8, game);
+		board[6][2].rotate(3);
 		board[6][4] = new Tile(0, 0, 17, game);
+		board[6][4].rotate(3);
 		board[6][6] = new Tile(0, 0, 0, game);
 		int index = 0;
 		for (int i = 0; i < SIZE; i++) {
@@ -88,7 +98,7 @@ public class Board {
 				board[i][j].setY(y + board[i][j].height*j);
 			}
 		}
-		spareTile.scaleBy2();
+		spareTile.scale(3);
 		spareTile.setX(Game.SCALE * Game.WIDTH - spareTile.width - (Game.SCALE * Game.WIDTH - (board[0][0].width*SIZE + spareTile.width))/7);
 		spareTile.setY((Game.SCALE * Game.HEIGHT - spareTile.height)/2);
 		
@@ -116,9 +126,9 @@ public class Board {
 		// Here we do a lot of math to determine the coordinates
 		// of the triangles to push tiles in. We set the default
 		// color to yellow and draw all of them in next to the board.
-		double hd = (Game.SCALE * Game.WIDTH - (board[0][0].width*SIZE + spareTile.width))/7.0;
-		double vd = (Game.SCALE * Game.HEIGHT - board[0][0].height*SIZE)/6.0;
-		double td = (board[0][0].height*SIZE)/28.0;
+		hd = (Game.SCALE * Game.WIDTH - (board[0][0].width*SIZE + spareTile.width))/7.0;
+		vd = (Game.SCALE * Game.HEIGHT - board[0][0].height*SIZE)/6.0;
+		td = (board[0][0].height*SIZE)/28.0;
 		g.setColor(Color.YELLOW);
 		g.fillPolygon(new int[] {(int)hd, (int)hd, (int)(2*hd)}, new int[] {(int)(3*vd + 5*td), (int)(3*vd + 7*td), (int)(3*vd + 6*td)}, 3);
 		g.fillPolygon(new int[] {(int)hd, (int)hd, (int)(2*hd)}, new int[] {(int)(3*vd + 13*td), (int)(3*vd + 15*td), (int)(3*vd + 14*td)}, 3);
@@ -132,6 +142,40 @@ public class Board {
 		g.fillPolygon(new int[] {(int)(3*hd + 5*td), (int)(3*hd + 7*td), (int)(3*hd + 6*td)}, new int[] {(int)(5*vd + 28*td), (int)(5*vd + 28*td), (int)(4*vd + 28*td)}, 3);
 		g.fillPolygon(new int[] {(int)(3*hd + 13*td), (int)(3*hd + 15*td), (int)(3*hd + 14*td)}, new int[] {(int)(5*vd + 28*td), (int)(5*vd + 28*td), (int)(4*vd + 28*td)}, 3);
 		g.fillPolygon(new int[] {(int)(3*hd + 21*td), (int)(3*hd + 23*td), (int)(3*hd + 22*td)}, new int[] {(int)(5*vd + 28*td), (int)(5*vd + 28*td), (int)(4*vd + 28*td)}, 3);
+	}
+	
+	// This function will shift all the tiles in a row
+	// or column and replace the spare tile with the 
+	// one that comes out the other end.
+	public void shiftRow(int row) {
+		switch (row) {
+		case 1:
+			return;
+		case 2:
+			return;
+		case 3:
+			return;
+		case 4:
+			return;
+		case 5:
+			return;
+		case 6:
+			return;
+		case 7:
+			return;
+		case 8:
+			return;
+		case 9:
+			return;
+		case 10:
+			return;
+		case 11:
+			return;
+		case 12:
+			return;
+		default:
+			return;
+		}
 	}
 	
 	// When 'r' is pressed on the keyboard, the

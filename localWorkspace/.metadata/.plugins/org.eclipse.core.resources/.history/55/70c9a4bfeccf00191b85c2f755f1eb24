@@ -1,0 +1,31 @@
+import java.awt.event.MouseAdapter;
+
+public class MouseInput extends MouseAdapter {
+	
+	Game game;
+	
+	public MouseInput(Game game) {
+		this.game = game;
+	}
+	
+	public void mouseClicked() {
+		
+	}
+	
+	public void mouseEntered() {
+		
+	}
+	
+	public void mouseExited() {
+		
+	}
+	
+	public void mousePressed() {
+		
+	}
+	
+	public void mouseReleased() {
+		
+	}
+	
+}

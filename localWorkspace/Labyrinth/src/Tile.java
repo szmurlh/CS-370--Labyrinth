@@ -29,21 +29,46 @@ public class Tile {
 		g.drawImage(tile, (int)x, (int)y, null);
 	}
 	
-	// Doubles the size of the BufferedImage
+	// Scales any tile by the number d
+	public void scale(double d) {
+		if (d == 1) return;
+		if (d <= 0) return;
+		if (d < 1) scaleDown(d);
+		if (d > 1) scaleUp(d);
+	}
+	
+	// Scales down the size of the BufferedImage
 	// This is used in displaying the spare tile.
-	public void scaleBy2() {
-		BufferedImage scaled = new BufferedImage(2 * width, 2 * height, BufferedImage.TYPE_INT_RGB);
-		for (int i = 0; i < width - 1; i++) {
-			for (int j = 0; j < height - 1; j++) {
-				int rgb = tile.getRGB(i, j);
-				scaled.setRGB(2*i, 2*j, rgb);
-				scaled.setRGB(2*i+1, 2*j, rgb);
-				scaled.setRGB(2*i, 2*j+1, rgb);
-				scaled.setRGB(2*i+1, 2*j+1, rgb);
+	public void scaleDown(double d) {
+		if (d == 0) return;
+		if (d >= 1) return;
+		
+		BufferedImage scaled = new BufferedImage((int)(d * width), (int)(d * height), BufferedImage.TYPE_INT_RGB);
+		for (int i = 0; i < scaled.getWidth(); i++) {
+			for (int j = 0; j < scaled.getHeight(); j++) {
+				int rgb = tile.getRGB((int)(i/d), (int)(j/d));
+				scaled.setRGB(i, j, rgb);
 			}
 		}
-		width *= 2;
-		height *= 2;
+		width = (int)(width*d);
+		height = (int)(height*d);
+		tile = scaled;
+	}
+	
+	// Scales up the size of the BufferedImage
+	// This is used in displaying the spare tile.
+	public void scaleUp(double d) {
+		if (d <= 1) return;
+		
+		BufferedImage scaled = new BufferedImage((int)(d*width)-1, (int)(d*height)-1, BufferedImage.TYPE_INT_RGB);
+		for (int i = 0; i < scaled.getWidth(); i++) {
+			for (int j = 0; j < scaled.getHeight(); j++) {
+				int rgb = tile.getRGB(Math.max(0, (int)(i/d)-1), Math.max(0, (int)(j/d)-1));
+				scaled.setRGB(i, j, rgb);
+			}
+		}
+		width = (int)(width * d);
+		height = (int)(height * d);
 		tile = scaled;
 	}
 	
