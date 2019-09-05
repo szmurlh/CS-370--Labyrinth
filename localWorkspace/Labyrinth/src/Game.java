@@ -1,6 +1,7 @@
 import java.awt.Canvas;
 import java.awt.Dimension;
 import java.awt.Graphics;
+import java.awt.event.KeyEvent;
 import java.awt.image.BufferStrategy;
 import java.awt.image.BufferedImage;
 import java.io.IOException;
@@ -10,7 +11,7 @@ import javax.swing.JFrame;
 public class Game extends Canvas implements Runnable {
 
 	// Basic variables for the frame.
-	public static final int WIDTH = 640;
+	public static final int WIDTH = 780;
 	public static final int HEIGHT = WIDTH * 9 / 12;
 	public static final int SCALE = 2;
 	public final String TITLE = "CS 370 - Labyrinth";
@@ -32,8 +33,10 @@ public class Game extends Canvas implements Runnable {
 			e.printStackTrace();
 		}
 		
+		addKeyListener(new KeyInput(this));
+		
 		// A little math to place the board in the center of the screen.
-		board = new Board((SCALE * WIDTH - (126*7))/2, (SCALE * HEIGHT - (126*7))/2, this);
+		board = new Board(3*(SCALE * WIDTH - (126*(Board.SIZE+2)))/7, (SCALE * HEIGHT - (126*Board.SIZE))/2, this);
 		
 	}
 	
@@ -132,6 +135,20 @@ public class Game extends Canvas implements Runnable {
 		g.dispose();
 		bs.show();
 		
+	}
+	
+	// These two functions handle all keyboard input.
+	public void keyPressed(KeyEvent e) {
+		
+	}
+	
+	public void keyReleased(KeyEvent e) {
+		int key = e.getKeyCode();
+		
+		// If 'r' is pressed, rotate the spare tile.
+		if (key == KeyEvent.VK_R) {
+			board.rotateSpare();
+		}
 	}
 	
 	public static void main(String[] args) {

@@ -1,0 +1,168 @@
+import java.awt.Color;
+import java.awt.Graphics;
+import java.util.ArrayList;
+
+public class Board {
+	
+	private double x;
+	private double y;
+	
+	public static final int SIZE = 7;
+	
+	Tile[] tileArray;
+	Tile[][] board;
+	Tile spareTile;
+	
+	public Board (double x, double y, Game game) {
+		
+		this.x = x;
+		this.y = y;
+		
+		// Fill the Board Array with all movable tiles
+		// This includes all 10 L-tiles, 12 I-tiles
+		// and the rest of the loot tiles.
+		tileArray = new Tile[34];
+		for (int i = 0; i < 10; i++) {
+			tileArray[i] = new Tile(0, 0, 29, game);
+		}
+		for (int i = 0; i < 12; i++) {
+			tileArray[10 + i] = new Tile(0, 0, 28, game);
+		}
+		tileArray[22] = new Tile(0, 0, 27, game);
+		tileArray[23] = new Tile(0, 0, 26, game);
+		tileArray[24] = new Tile(0, 0, 25, game);
+		tileArray[25] = new Tile(0, 0, 24, game);
+		tileArray[26] = new Tile(0, 0, 21, game);
+		tileArray[27] = new Tile(0, 0, 19, game);
+		tileArray[28] = new Tile(0, 0, 14, game);
+		tileArray[29] = new Tile(0, 0, 13, game);
+		tileArray[30] = new Tile(0, 0, 12, game);
+		tileArray[31] = new Tile(0, 0, 9, game);
+		tileArray[32] = new Tile(0, 0, 5, game);
+		tileArray[33] = new Tile(0, 0, 4, game);
+		
+		// Finally, we shuffle all the movable pieces to
+		// prepare them to enter the board.
+		shuffleTiles();
+		
+		// Here, we fill in all the non-movable tiles into
+		// the board and then loop through the movable tiles
+		// and fill them into the missing spaces.
+		board = new Tile[SIZE][SIZE];
+		board[0][0] = new Tile(0, 0, 3, game);
+		board[0][2] = new Tile(0, 0, 22, game);
+		board[0][4] = new Tile(0, 0, 7, game);
+		board[0][6] = new Tile(0, 0, 1, game);
+		board[2][0] = new Tile(0, 0, 6, game);
+		board[2][2] = new Tile(0, 0, 11, game);
+		board[2][2].rotate(1);
+		board[2][4] = new Tile(0, 0, 18, game);
+		board[2][4].rotate(0);
+		board[2][6] = new Tile(0, 0, 10, game);
+		board[4][0] = new Tile(0, 0, 23, game);
+		board[4][2] = new Tile(0, 0, 20, game);
+		board[4][2].rotate(2);
+		board[4][4] = new Tile(0, 0, 16, game);
+		board[4][4].rotate(3);
+		board[4][6] = new Tile(0, 0, 15, game);
+		board[6][0] = new Tile(0, 0, 2, game);
+		board[6][2] = new Tile(0, 0, 8, game);
+		board[6][4] = new Tile(0, 0, 17, game);
+		board[6][6] = new Tile(0, 0, 0, game);
+		int index = 0;
+		for (int i = 0; i < SIZE; i++) {
+			for (int j = 0; j < SIZE; j++) {
+				if (i % 2 == 1 || j % 2 == 1) {
+					board[i][j] = tileArray[index++];
+				}
+			}
+		}
+		
+		rotateTiles();
+		
+		// Now, we update all the x,y positions of
+		// each tile in the board.
+		for (int i = 0; i < SIZE; i++) {
+			for (int j = 0; j < SIZE; j++) {
+				board[i][j].setX(x + board[i][j].width*i);
+				board[i][j].setY(y + board[i][j].height*j);
+			}
+		}
+		spareTile.scaleBy2();
+		spareTile.setX(Game.SCALE * Game.WIDTH - spareTile.width - (Game.SCALE * Game.WIDTH - (board[0][0].width*SIZE + spareTile.width))/7);
+		spareTile.setY((Game.SCALE * Game.HEIGHT - spareTile.height)/2);
+		
+	}
+	
+	// Make every Tile tick
+	public void tick() {
+		for (int i = 0; i < SIZE; i++) {
+			for (int j = 0; j < SIZE; j++) {
+				board[i][j].tick();
+			}
+		}
+		spareTile.tick();
+	}
+	
+	// Render every Tile
+	public void render(Graphics g) {
+		for (int i = 0; i < SIZE; i++) {
+			for (int j = 0; j < SIZE; j++) {
+				board[i][j].render(g);
+			}
+		}
+		spareTile.render(g);
+		
+		// Here we do a lot of math to determine the coordinates
+		// of the triangles to push tiles in. We set the default
+		// color to yellow and draw all of them in next to the board.
+		int horizCut = (Game.SCALE * Game.WIDTH - (board[0][0].width*SIZE + spareTile.width))/7;
+		int vertCut = (Game.SCALE * Game.HEIGHT - board[0][0].height*SIZE)/6;
+		int tileCut = (board[0][0].height*SIZE)/28;
+		g.setColor(Color.YELLOW);
+		g.fillPolygon(new int[] {horizCut, horizCut, 2*horizCut}, new int[] {3*vertCut + 5*tileCut, 3*vertCut + 7*tileCut, 3*vertCut + 6*tileCut}, 3);
+		g.fillPolygon(new int[] {horizCut, horizCut, 2*horizCut}, new int[] {3*vertCut + 13*tileCut, 3*vertCut + 15*tileCut, 3*vertCut + 14*tileCut}, 3);
+		g.fillPolygon(new int[] {horizCut, horizCut, 2*horizCut}, new int[] {3*vertCut + 21*tileCut, 3*vertCut + 23*tileCut, 3*vertCut + 22*tileCut}, 3);
+		g.fillPolygon(new int[] {5*horizCut + 28*tileCut, 5*horizCut + 28*tileCut, 4*horizCut + 28*tileCut}, new int[] {3*vertCut + 5*tileCut, 3*vertCut + 7*tileCut, 3*vertCut + 6*tileCut}, 3);
+		g.fillPolygon(new int[] {5*horizCut + 28*tileCut, 5*horizCut + 28*tileCut, 4*horizCut + 28*tileCut}, new int[] {3*vertCut + 13*tileCut, 3*vertCut + 15*tileCut, 3*vertCut + 14*tileCut}, 3);
+		g.fillPolygon(new int[] {5*horizCut + 28*tileCut, 5*horizCut + 28*tileCut, 4*horizCut + 28*tileCut}, new int[] {3*vertCut + 21*tileCut, 3*vertCut + 23*tileCut, 3*vertCut + 22*tileCut}, 3);
+		g.fillPolygon(new int[] {3*horizCut + 5*tileCut, 3*horizCut + 7*tileCut, 3*horizCut + 6*tileCut}, new int[] {vertCut, vertCut, 2*vertCut}, 3);
+		g.fillPolygon(new int[] {3*horizCut + 13*tileCut, 3*horizCut + 15*tileCut, 3*horizCut + 14*tileCut}, new int[] {vertCut, vertCut, 2*vertCut}, 3);
+		g.fillPolygon(new int[] {3*horizCut + 21*tileCut, 3*horizCut + 23*tileCut, 3*horizCut + 22*tileCut}, new int[] {vertCut, vertCut, 2*vertCut}, 3);
+		g.fillPolygon(new int[] {3*horizCut + 5*tileCut, 3*horizCut + 7*tileCut, 3*horizCut + 6*tileCut}, new int[] {4*vertCut + 5*tileCut, 5*vertCut + 7*tileCut, 5*vertCut + 6*tileCut}, 3);
+		g.fillPolygon(new int[] {3*horizCut + 13*tileCut, 3*horizCut + 15*tileCut, 3*horizCut + 14*tileCut}, new int[] {4*vertCut + 5*tileCut, 5*vertCut + 7*tileCut, 5*vertCut + 6*tileCut}, 3);
+		g.fillPolygon(new int[] {3*horizCut + 21*tileCut, 3*horizCut + 23*tileCut, 3*horizCut + 22*tileCut}, new int[] {4*vertCut + 5*tileCut, 5*vertCut + 7*tileCut, 5*vertCut + 6*tileCut}, 3);
+	}
+	
+	// When 'r' is pressed on the keyboard, the
+	// spare tile will rotate once.
+	public void rotateSpare() {
+		spareTile.rotate(1);
+	}
+	
+	// Shuffles all the movable tiles before placing them in the board
+	private void shuffleTiles() {
+		ArrayList<Tile> temp = new ArrayList<Tile>();
+		for (int i = 0; i < tileArray.length; i++) {
+			temp.add(tileArray[i]);
+		}
+		
+		int index = 0;
+		while (temp.size() > 1) {
+			tileArray[index++] = temp.remove((int)(Math.random()*temp.size()));
+		}
+		spareTile = temp.remove(0);
+	}
+	
+	// Rotates every movable tile on the board.
+	private void rotateTiles() {
+		for (int i = 0; i < SIZE; i++) {
+			for (int j = 0; j < SIZE; j++) {
+				if (i % 2 == 1 || j % 2 == 1) {
+					board[i][j].rotate((int)(Math.random()*4));
+				}
+			}
+		}
+	}
+	
+}

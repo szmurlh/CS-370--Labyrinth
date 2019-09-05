@@ -1,0 +1,65 @@
+import java.awt.Graphics;
+import java.awt.image.BufferedImage;
+
+public class Tile {
+	
+	private double x;
+	private double y;
+	
+	public static final int WIDTH = 126;
+	public static final int HEIGHT = 126;
+	
+	private BufferedImage tile;
+	
+	// Create a Tile instance and take it's image from
+	// the spritesheet based on given x and y.
+	public Tile (double x, double y, int number, Game game) {
+		this.x = x;
+		this.y = y;
+		
+		SpriteSheet ss = new SpriteSheet(game.getSpriteSheet());
+		tile = ss.getImage(number % 10, number / 10, WIDTH, HEIGHT);
+	}
+	
+	public void tick() {
+		
+	}
+	
+	public void render(Graphics g) {
+		g.drawImage(tile, (int)x, (int)y, null);
+	}
+	
+	public void rotate(int turns) {
+		if (turns % 4 == 0) {
+			return;
+		}
+		int[][] rgb = new int[WIDTH - 1][HEIGHT - 1];
+		for (int i = 0; i < WIDTH - 1; i++) {
+			for (int j = 0; j < HEIGHT - 1; j++) {
+				rgb[i][j] = tile.getRGB(i, j);
+			}
+		}
+		for (int i = 0; i < WIDTH - 1; i++) {
+			for (int j = 0; j < HEIGHT - 1; j++) {
+				if (turns % 4 == 1) {
+					tile.setRGB(WIDTH - 2 - j, i, rgb[i][j]);
+				} else if (turns % 4 == 2) {
+					tile.setRGB(WIDTH - 2 - i, HEIGHT - 2 - j, rgb[i][j]);
+				} else {
+					tile.setRGB(j, HEIGHT - 2 - i, rgb[i][j]);
+				}
+			}
+		}
+	}
+	
+	// setX and setY are used to randomize the movable tiles
+	// and to change the places of the moving tiles.
+	public void setX (double x) {
+		this.x = x;
+	}
+	
+	public void setY (double y) {
+		this.y = y;
+	}
+	
+}

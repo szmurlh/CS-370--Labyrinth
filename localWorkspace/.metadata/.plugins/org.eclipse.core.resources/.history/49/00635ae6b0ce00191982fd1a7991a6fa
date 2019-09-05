@@ -1,0 +1,163 @@
+import java.awt.Canvas;
+import java.awt.Dimension;
+import java.awt.Graphics;
+import java.awt.image.BufferStrategy;
+import java.awt.image.BufferedImage;
+import java.io.IOException;
+
+import javax.swing.JFrame;
+
+public class Game extends Canvas implements Runnable {
+
+	// Basic variables for the frame.
+	public static final int WIDTH = 640;
+	public static final int HEIGHT = WIDTH * 9 / 12;
+	public static final int SCALE = 2;
+	public final String TITLE = "CS 370 - Labyrinth";
+	
+	
+	private boolean running = false;
+	private Thread thread;
+	
+	private BufferedImage image = new BufferedImage(WIDTH, HEIGHT, BufferedImage.TYPE_INT_RGB);
+	private BufferedImage tileSS = null;
+	
+	private Board board;
+	
+	public void init() {
+		BufferedImageLoader loader = new BufferedImageLoader();
+		try {
+			tileSS = loader.loadImage("res\\spritesheet_small.png");
+		} catch (IOException e) {
+			e.printStackTrace();
+		}
+		
+		// A little math to place the board in the center of the screen.
+		board = new Board((SCALE * WIDTH - (126*7))/2, (SCALE * HEIGHT - (126*7))/2, this);
+		
+	}
+	
+	// This function will start the game loop.
+	// This should only be called once, and if it
+	// is ever accidentally called again, it will return.
+	private synchronized void start() {
+		if (running) {
+			return;
+		} else {
+			running = true;
+			init();
+			run();
+		}
+	}
+	
+	// This is one of the last functions to be called. When this
+	// is called, the game will terminate and the game loop will
+	// end. We join the threads to make sure everything runs smooth.
+	private synchronized void stop() {
+		if (!running) {
+			return;
+		} else {
+			running = false;
+			try {
+				thread.join();
+			} catch (InterruptedException e) {
+				e.printStackTrace();
+			}
+			System.exit(1);
+		}
+	}
+	
+	public void run() {
+		
+		// These variables are to be able to count ticks
+		// and frames per second. This is important to
+		// ensure the game runs at the same speed every time.
+		long lastTime = System.nanoTime();
+		final double ticks = 60.0;
+		double ns = 1000000000 / ticks;
+		double delta = 0;
+		int updates = 0;
+		int frames = 0;
+		long timer = System.currentTimeMillis();
+		
+		// ================================= //
+		// THIS IS THE GAME LOOP.            //
+		// ALL GAME LOGIC SHOULD HAPPEN HERE //
+		// ================================= //
+		while (running) {
+			// Tick and FPS logic.
+			long now = System.nanoTime();
+			delta += (now - lastTime) / ns;
+			lastTime = now;
+			if (delta >= 1) {
+				tick();
+				updates++;
+				delta--;
+			}
+			render();
+			frames++;
+			if (System.currentTimeMillis() - timer > 1000) {
+				timer += 1000;
+				System.out.println(updates + " Ticks, FPS " + frames);
+				updates = 0;
+				frames = 0;
+			}
+			// End tick and FPS logic.
+			
+			
+		}
+		stop();
+	}
+	
+	private void tick() {
+		board.tick();
+	}
+	
+	private void render() {
+		
+		// This block of code will create a Buffer on the screen
+		// if one has not already been created. Otherwise, it will
+		// get the BufferStrategy from the Canvas.
+		BufferStrategy bs = this.getBufferStrategy();
+		if (bs == null) {
+			createBufferStrategy(3);
+			return;
+		}
+		
+		Graphics g = bs.getDrawGraphics();
+		g.drawImage(image, 0, 0, getWidth(), getHeight(), this);
+		
+		board.render(g);
+		
+		g.dispose();
+		bs.show();
+		
+	}
+	
+	public static void main(String[] args) {
+		
+		Game game = new Game();
+		
+		// These next few lines will take care of making the JFrame
+		// the correct size, making it not resizable, making it
+		// visible, etc.. It will then call start to begin game logic.
+		game.setPreferredSize(new Dimension(WIDTH * SCALE, HEIGHT * SCALE));
+		game.setMaximumSize(new Dimension(WIDTH * SCALE, HEIGHT * SCALE));
+		game.setMinimumSize(new Dimension(WIDTH * SCALE, HEIGHT * SCALE));
+		
+		JFrame frame = new JFrame(game.TITLE);
+		frame.add(game);
+		frame.pack();
+		frame.setDefaultCloseOperation(JFrame.EXIT_ON_CLOSE);
+		frame.setResizable(false);
+		frame.setLocationRelativeTo(null);
+		frame.setVisible(true);
+		
+		game.start();
+	}
+	
+	public BufferedImage getSpriteSheet() {
+		return this.tileSS;
+	}
+	
+}
