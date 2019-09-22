@@ -1,281 +1,581 @@
-import java.awt.Color;
-import java.awt.Graphics;
-import java.awt.image.BufferedImage;
-import java.util.ArrayList;
+/*
+ * To change this license header, choose License Headers in Project Properties.
+ * To change this template file, choose Tools | Templates
+ * and open the template in the editor.
+ */
+package com.cs370.labyrinth;
 
+import com.badlogic.gdx.graphics.Texture;
+import java.util.ArrayList;
+import java.util.Collection;
+import java.util.HashMap;
+
+/**
+ *
+ * @author Nick
+ */
 public class Board {
-	
-	private double x;
-	private double y;
-	
-	public static final int SIZE = 7;
-	
-	Tile[] tileArray;
-	Tile[][] board;
-	Tile spareTile;
-	
-	public Board (double x, double y, Game game) {
-		
-		this.x = x;
-		this.y = y;
-		
-		// Fill the Board Array with all movable tiles
-		// This includes all 10 L-tiles, 12 I-tiles
-		// and the rest of the loot tiles.
-		tileArray = new Tile[34];
-		for (int i = 0; i < 10; i++) {
-			tileArray[i] = new Tile(0, 0, 29, game);
-		}
-		for (int i = 0; i < 12; i++) {
-			tileArray[10 + i] = new Tile(0, 0, 28, game);
-		}
-		tileArray[22] = new Tile(0, 0, 27, game);
-		tileArray[23] = new Tile(0, 0, 26, game);
-		tileArray[24] = new Tile(0, 0, 25, game);
-		tileArray[25] = new Tile(0, 0, 24, game);
-		tileArray[26] = new Tile(0, 0, 21, game);
-		tileArray[27] = new Tile(0, 0, 19, game);
-		tileArray[28] = new Tile(0, 0, 14, game);
-		tileArray[29] = new Tile(0, 0, 13, game);
-		tileArray[30] = new Tile(0, 0, 12, game);
-		tileArray[31] = new Tile(0, 0, 9, game);
-		tileArray[32] = new Tile(0, 0, 5, game);
-		tileArray[33] = new Tile(0, 0, 4, game);
-		
-		// Finally, we shuffle all the movable pieces to
-		// prepare them to enter the board.
-		shuffleTiles();
-		
-		// Here, we fill in all the non-movable tiles into
-		// the board and then loop through the movable tiles
-		// and fill them into the missing spaces.
-		board = new Tile[SIZE][SIZE];
-		board[0][0] = new Tile(0, 0, 3, game);
-		board[0][2] = new Tile(0, 0, 22, game);
-		board[0][4] = new Tile(0, 0, 7, game);
-		board[0][6] = new Tile(0, 0, 1, game);
-		board[2][0] = new Tile(0, 0, 6, game);
-		board[2][2] = new Tile(0, 0, 11, game);
-		board[2][2].rotate(1);
-		board[2][4] = new Tile(0, 0, 18, game);
-		board[2][4].rotate(0);
-		board[2][6] = new Tile(0, 0, 10, game);
-		board[4][0] = new Tile(0, 0, 23, game);
-		board[4][2] = new Tile(0, 0, 20, game);
-		board[4][2].rotate(2);
-		board[4][4] = new Tile(0, 0, 16, game);
-		board[4][4].rotate(3);
-		board[4][6] = new Tile(0, 0, 15, game);
-		board[6][0] = new Tile(0, 0, 2, game);
-		board[6][2] = new Tile(0, 0, 8, game);
-		board[6][4] = new Tile(0, 0, 17, game);
-		board[6][6] = new Tile(0, 0, 0, game);
-		int index = 0;
-		for (int i = 0; i < SIZE; i++) {
-			for (int j = 0; j < SIZE; j++) {
-				if (i % 2 == 1 || j % 2 == 1) {
-					board[i][j] = tileArray[index++];
-				}
-			}
-		}
-		
-		rotateTiles();
-		
-		// Now, we update all the x,y positions of
-		// each tile in the board.
-		for (int i = 0; i < SIZE; i++) {
-			for (int j = 0; j < SIZE; j++) {
-				board[i][j].setX(x + board[i][j].width*i);
-				board[i][j].setY(y + board[i][j].height*j);
-			}
-		}
-		spareTile.scale(2);
-		spareTile.setX(Game.SCALE * Game.WIDTH - spareTile.width - (Game.SCALE * Game.WIDTH - (board[0][0].width*SIZE + spareTile.width))/7);
-		spareTile.setY((Game.SCALE * Game.HEIGHT - spareTile.height)/2);
-		
-	}
-	
-	// Make every Tile tick
-	public void tick() {
-		for (int i = 0; i < SIZE; i++) {
-			for (int j = 0; j < SIZE; j++) {
-				board[i][j].tick();
-			}
-		}
-		spareTile.tick();
-	}
-	
-	// Render every Tile
-	public void render(Graphics g) {
-		for (int i = 0; i < SIZE; i++) {
-			for (int j = 0; j < SIZE; j++) {
-				board[i][j].render(g);
-			}
-		}
-		spareTile.render(g);
-		
-		// Here we do a lot of math to determine the coordinates
-		// of the triangles to push tiles in. We set the default
-		// color to yellow and draw all of them in next to the board.
-		double hd = (Game.SCALE * Game.WIDTH - (board[0][0].width*SIZE + spareTile.width))/7.0;
-		double vd = (Game.SCALE * Game.HEIGHT - board[0][0].height*SIZE)/6.0;
-		double td = (board[0][0].height*SIZE)/28.0;
-		g.setColor(Color.YELLOW);
-		g.fillPolygon(new int[] {(int)hd, (int)hd, (int)(2*hd)}, new int[] {(int)(3*vd + 5*td), (int)(3*vd + 7*td), (int)(3*vd + 6*td)}, 3);
-		g.fillPolygon(new int[] {(int)hd, (int)hd, (int)(2*hd)}, new int[] {(int)(3*vd + 13*td), (int)(3*vd + 15*td), (int)(3*vd + 14*td)}, 3);
-		g.fillPolygon(new int[] {(int)hd, (int)hd, (int)(2*hd)}, new int[] {(int)(3*vd + 21*td), (int)(3*vd + 23*td), (int)(3*vd + 22*td)}, 3);
-		g.fillPolygon(new int[] {(int)(5*hd + 28*td), (int)(5*hd + 28*td), (int)(4*hd + 28*td)}, new int[] {(int)(3*vd + 5*td), (int)(3*vd + 7*td), (int)(3*vd + 6*td)}, 3);
-		g.fillPolygon(new int[] {(int)(5*hd + 28*td), (int)(5*hd + 28*td), (int)(4*hd + 28*td)}, new int[] {(int)(3*vd + 13*td), (int)(3*vd + 15*td), (int)(3*vd + 14*td)}, 3);
-		g.fillPolygon(new int[] {(int)(5*hd + 28*td), (int)(5*hd + 28*td), (int)(4*hd + 28*td)}, new int[] {(int)(3*vd + 21*td), (int)(3*vd + 23*td), (int)(3*vd + 22*td)}, 3);
-		g.fillPolygon(new int[] {(int)(3*hd + 5*td), (int)(3*hd + 7*td), (int)(3*hd + 6*td)}, new int[] {(int)vd, (int)vd, (int)(2*vd)}, 3);
-		g.fillPolygon(new int[] {(int)(3*hd + 13*td), (int)(3*hd + 15*td), (int)(3*hd + 14*td)}, new int[] {(int)vd, (int)vd, (int)(2*vd)}, 3);
-		g.fillPolygon(new int[] {(int)(3*hd + 21*td), (int)(3*hd + 23*td), (int)(3*hd + 22*td)}, new int[] {(int)vd, (int)vd, (int)(2*vd)}, 3);
-		g.fillPolygon(new int[] {(int)(3*hd + 5*td), (int)(3*hd + 7*td), (int)(3*hd + 6*td)}, new int[] {(int)(5*vd + 28*td), (int)(5*vd + 28*td), (int)(4*vd + 28*td)}, 3);
-		g.fillPolygon(new int[] {(int)(3*hd + 13*td), (int)(3*hd + 15*td), (int)(3*hd + 14*td)}, new int[] {(int)(5*vd + 28*td), (int)(5*vd + 28*td), (int)(4*vd + 28*td)}, 3);
-		g.fillPolygon(new int[] {(int)(3*hd + 21*td), (int)(3*hd + 23*td), (int)(3*hd + 22*td)}, new int[] {(int)(5*vd + 28*td), (int)(5*vd + 28*td), (int)(4*vd + 28*td)}, 3);
-	}
-	
-	public void shiftRowCol(int number) {
-		if (number == 1) {
-			board[1][6].scale(2);
-			spareTile.scale(0.5);
-			BufferedImage temp = spareTile.getImage();
-			spareTile.setImage(board[1][6].getImage());
-			for (int i = 1; i < SIZE; i++) {
-				board[1][7-i].setImage(board[1][6-i].getImage());
-			}
-			board[1][0].setImage(temp);
-		} else if (number == 2) {
-			board[3][6].scale(2);
-			spareTile.scale(0.5);
-			BufferedImage temp = spareTile.getImage();
-			spareTile.setImage(board[3][6].getImage());
-			for (int i = 1; i < SIZE; i++) {
-				board[3][7-i].setImage(board[3][6-i].getImage());
-			}
-			board[3][0].setImage(temp);
-		} else if (number == 3) {
-			board[5][6].scale(2);
-			spareTile.scale(0.5);
-			BufferedImage temp = spareTile.getImage();
-			spareTile.setImage(board[5][6].getImage());
-			for (int i = 1; i < SIZE; i++) {
-				board[5][7-i].setImage(board[5][6-i].getImage());
-			}
-			board[5][0].setImage(temp);
-		} else if (number == 4) {
-			board[1][0].scale(2);
-			spareTile.scale(0.5);
-			BufferedImage temp = spareTile.getImage();
-			spareTile.setImage(board[1][0].getImage());
-			for (int i = 1; i < SIZE; i++) {
-				board[1][i-1].setImage(board[1][i].getImage());
-			}
-			board[1][6].setImage(temp);
-		} else if (number == 5) {
-			board[3][0].scale(2);
-			spareTile.scale(0.5);
-			BufferedImage temp = spareTile.getImage();
-			spareTile.setImage(board[3][0].getImage());
-			for (int i = 1; i < SIZE; i++) {
-				board[3][i-1].setImage(board[3][i].getImage());
-			}
-			board[3][6].setImage(temp);
-		} else if (number == 6) {
-			board[5][0].scale(2);
-			spareTile.scale(0.5);
-			BufferedImage temp = spareTile.getImage();
-			spareTile.setImage(board[5][0].getImage());
-			for (int i = 1; i < SIZE; i++) {
-				board[5][i-1].setImage(board[5][i].getImage());
-			}
-			board[5][6].setImage(temp);
-		} else if (number == 7) {
-			board[6][1].scale(2);
-			spareTile.scale(0.5);
-			BufferedImage temp = spareTile.getImage();
-			spareTile.setImage(board[6][1].getImage());
-			for (int i = 1; i < SIZE; i++) {
-				board[7-i][1].setImage(board[6-i][1].getImage());
-			}
-			board[0][1].setImage(temp);
-		} else if (number == 8) {
-			board[6][3].scale(2);
-			spareTile.scale(0.5);
-			BufferedImage temp = spareTile.getImage();
-			spareTile.setImage(board[6][3].getImage());
-			for (int i = 1; i < SIZE; i++) {
-				board[7-i][3].setImage(board[6-i][3].getImage());
-			}
-			board[0][3].setImage(temp);
-		} else if (number == 9) {
-			board[6][5].scale(2);
-			spareTile.scale(0.5);
-			BufferedImage temp = spareTile.getImage();
-			spareTile.setImage(board[6][5].getImage());
-			for (int i = 1; i < SIZE; i++) {
-				board[7-i][5].setImage(board[6-i][5].getImage());
-			}
-			board[0][5].setImage(temp);
-		} else if (number == 10) {
-			board[0][1].scale(2);
-			spareTile.scale(0.5);
-			BufferedImage temp = spareTile.getImage();
-			spareTile.setImage(board[0][1].getImage());
-			for (int i = 1; i < SIZE; i++) {
-				board[i-1][1].setImage(board[i][1].getImage());
-			}
-			board[6][1].setImage(temp);
-		} else if (number == 11) {
-			board[0][3].scale(2);
-			spareTile.scale(0.5);
-			BufferedImage temp = spareTile.getImage();
-			spareTile.setImage(board[0][3].getImage());
-			for (int i = 1; i < SIZE; i++) {
-				board[i-1][3].setImage(board[i][3].getImage());
-			}
-			board[6][3].setImage(temp);
-		} else if (number == 12) {
-			board[0][5].scale(2);
-			spareTile.scale(0.5);
-			BufferedImage temp = spareTile.getImage();
-			spareTile.setImage(board[0][5].getImage());
-			for (int i = 1; i < SIZE; i++) {
-				board[i-1][5].setImage(board[i][5].getImage());
-			}
-			board[6][5].setImage(temp);
-		}
-	}
-	
-	// When 'r' is pressed on the keyboard, the
-	// spare tile will rotate once.
-	public void rotateSpare() {
-		spareTile.rotate(1);
-	}
-	
-	// Shuffles all the movable tiles before placing them in the board
-	private void shuffleTiles() {
-		ArrayList<Tile> temp = new ArrayList<Tile>();
-		for (int i = 0; i < tileArray.length; i++) {
-			temp.add(tileArray[i]);
-		}
-		
-		int index = 0;
-		while (temp.size() > 1) {
-			tileArray[index++] = temp.remove((int)(Math.random()*temp.size()));
-		}
-		spareTile = temp.remove(0);
-	}
-	
-	// Rotates every movable tile on the board.
-	private void rotateTiles() {
-		for (int i = 0; i < SIZE; i++) {
-			for (int j = 0; j < SIZE; j++) {
-				if (i % 2 == 1 || j % 2 == 1) {
-					board[i][j].rotate((int)(Math.random()*4));
-				}
-			}
-		}
-	}
-	
+    
+    private Texture spriteSheet;
+    private HashMap tiles;
+    private Tile [][] grid;
+    private Tile nextTile;
+  
+    public Board() {
+        
+        spriteSheet = new Texture("spritesheet_small.png");
+        
+        nextTile = new Tile(true, true, true, true);
+        nextTile.setTileImage(spriteSheet, 0, 0);
+        
+        tiles = new HashMap();
+        grid = new Tile [7][7];
+
+        generateAllTiles();
+        populateFixedTileGrid();
+        populateMovableTileGrid();
+    }
+    
+    
+    public Tile getTile(int row, int col) {
+
+        Tile tile = grid[col][row];
+        
+       return tile;
+    }
+    
+    public void pushTileUp(int col) {
+        Tile poppedTile = grid[6][col];
+        
+        grid[6][col] = grid[5][col];
+        
+        grid[5][col] = grid[4][col];
+        
+        grid[4][col] = grid[3][col];
+        
+        grid[3][col] = grid[2][col];
+        
+        grid[2][col] = grid[1][col];
+        
+        grid[1][col] = grid[0][col];
+        
+        grid[0][col] = nextTile;
+      
+        
+        nextTile = poppedTile;
+        
+    }
+    
+    public void pushTileDown(int col){
+        
+        Tile poppedTile = grid[0][col];
+        
+        grid[0][col] = grid[1][col];
+        
+        grid[1][col] = grid[2][col];
+        
+        grid[2][col] = grid[3][col];
+        
+        grid[3][col] = grid[4][col];
+        
+        grid[4][col] = grid[5][col];
+        
+        grid[5][col] = grid[6][col];
+        
+        grid[6][col] = nextTile;
+        
+        nextTile = poppedTile;
+
+        
+    }
+    
+    public void pushTileRight(int row){
+        Tile poppedTile = grid [row][6];
+        
+        grid[row][6] = grid[row][5];
+        
+        grid[row][5] = grid[row][4];
+        
+        grid[row][4] = grid[row][3];
+              
+        grid[row][3] = grid[row][2];
+        
+        grid[row][2] = grid[row][1];
+        
+        grid[row][1] = grid[row][0];
+        
+        grid[row][0] = nextTile;
+        
+        nextTile = poppedTile;
+        
+    }
+
+    public void pushTileLeft(int row){
+        Tile poppedTile = grid [row][0];
+        
+        grid[row][0] = grid[row][1];
+        
+        grid[row][1] = grid[row][2];
+        
+        grid[row][2] = grid[row][3];
+        
+        grid[row][3] = grid[row][4];
+        
+        grid[row][4] = grid[row][5];
+        
+        grid[row][5] = grid[row][6];
+        
+        grid[row][6] = nextTile;
+        
+        nextTile = poppedTile;
+    }
+    
+    public void rotateBoard() {
+        for(int i = 0; i < 3; i++) {
+            for(int j = i; j < (6 - i); j++) {
+                 Tile copy = grid[i][j];
+                 
+                 grid[i][j] = grid[j][6 - i];
+                 grid[i][j].rotateTileRight();
+                 
+                 grid[j][6-i] = grid[6 - i][6 - j];
+                 grid[j][6-i].rotateTileRight();
+                 
+                 grid[6-i][6-j] = grid[6-j][i];
+                 grid[6-i][6-j].rotateTileRight();
+
+                 grid[6-j][i] = copy;
+                 grid[6-j][i].rotateTileRight();
+            }
+        }
+        grid[3][3].rotateTileRight();
+    }
+
+    private void populateMovableTileGrid() {
+ 
+        Collection<Tile> tileHashMapValues = tiles.values();
+        ArrayList<Tile> tileArrayList = new ArrayList<Tile>(tileHashMapValues);
+        
+        ArrayList<Tile> movableItemTiles = new ArrayList<Tile>();
+        
+        //assign movableItemTilesArray the movable item tiles in the tileArrayList
+        for(Tile tile : tileArrayList) {
+            if(!tile.isFixedTile() && tile.getItem() != null) {
+                movableItemTiles.add(tile);
+            }
+        }
+        
+        //counters to determine tiles remaining
+        int numOfLTiles = 9;
+        int numOfITiles = 11;
+        int numOfItemTiles = movableItemTiles.size();
+
+        //randomly assign movable tiles to the grid
+        for(int i = 0; i < 7; i++) {
+            for(int j = 0; j < 7; j++) {
+                if(i == 1 || i == 3 || i == 5 || j == 1 || j == 3 || j == 5) {
+
+                    Tile tile = new Tile();   
+                    int randomTileNumber = (int) (Math.random() * 10) % 3;
+                    int randomRotationNumber = (int) (Math.random() * 10) % 4;
+                    
+                    switch(randomTileNumber) {
+                        
+                        case 0 : {
+                            if(numOfLTiles >= 0) {
+                                tile = (Tile) tiles.get("lTile" + numOfLTiles);
+                                numOfLTiles--;
+                            }    
+                            else if(numOfITiles >= 0) {
+                                tile = (Tile) tiles.get("iTile" + numOfITiles);
+                                numOfITiles--;
+                            }
+                            else if(numOfItemTiles > 0) {
+                                tile = (Tile) movableItemTiles.get(0);
+                                movableItemTiles.remove(0);
+                                movableItemTiles.trimToSize();
+                                numOfItemTiles = movableItemTiles.size();
+                            }
+                            break;
+                        }
+                        
+                        case 1 : {
+                            if(numOfItemTiles > 0) {
+                                tile = (Tile) movableItemTiles.get(0);
+                                movableItemTiles.remove(0);
+                                movableItemTiles.trimToSize();
+                                numOfItemTiles = movableItemTiles.size();
+                            }
+                            else if(numOfLTiles > 0) {
+                                tile = (Tile) tiles.get("lTile" + numOfLTiles);
+                                numOfLTiles--;
+                            }
+                            else if(numOfITiles > 0) {
+                                tile = (Tile) tiles.get("iTile" + numOfITiles);
+                                numOfITiles--;
+                            }
+                            
+                            break;
+                        }
+                        
+                        case 2 : {
+                            if(numOfITiles > 0) {
+                                tile = (Tile) tiles.get("iTile" + numOfITiles);
+                                numOfITiles--;
+                            }
+                            else if(numOfItemTiles > 0) {
+                                tile = (Tile) movableItemTiles.get(0);
+                                movableItemTiles.remove(0);
+                                movableItemTiles.trimToSize();
+                                numOfItemTiles = movableItemTiles.size();
+                            }
+                            else if(numOfLTiles > 0) {
+                               tile = (Tile) tiles.get("lTile" + numOfLTiles);
+                               numOfLTiles--;
+                            }
+                            break;
+                        }
+                    }
+
+                    //random tile rotation
+                    while(randomRotationNumber > 0) {
+                        tile.rotateTileRight();
+                        randomRotationNumber--;
+                    }
+                    
+                    grid[i][j] = tile;
+                }
+            }
+        }   
+     }    
+    
+    private void populateFixedTileGrid() {
+        
+        for(int i = 0; i < 7; i++) {
+            for(int j = 0; j < 7; j++) {
+                Tile tile = new Tile(); 
+        
+                if(i == 6 && j == 0) {
+                    tile = (Tile) tiles.get("yellowTile");
+                }
+                
+                else if(i == 0 && j == 0) {
+                    tile = (Tile) tiles.get("greenTile");
+                }
+                
+                else if(i == 6 && j == 6) {
+                    tile = (Tile) tiles.get("redTile");
+                }
+                
+                else if(i == 0 && j == 6) {
+                    tile = (Tile) tiles.get("blueTile");
+                }
+                
+                else if(i == 0 && j == 2) {
+                    tile = (Tile) tiles.get("candelTile");
+                }
+                
+                else if(i == 0 && j == 4) {
+                    tile = (Tile) tiles.get("knightTile");
+                }
+                
+                else if(i == 2 && j == 0) {
+                    tile = (Tile) tiles.get("ringTile");
+                    tile.rotateTileRight();
+                }
+                
+                else if(i == 4 && j == 0) {
+                    tile = (Tile) tiles.get("mapTile");
+                    tile.rotateTileRight();
+                }
+                
+                else if(i == 6 && j == 2) {
+                    tile = (Tile) tiles.get("bookTile");
+                    tile.rotateTileRight();
+                    tile.rotateTileRight();
+                }
+                
+                else if(i == 6 && j == 4) {
+                    tile = (Tile) tiles.get("moneyTile");
+                    tile.rotateTileRight();
+                    tile.rotateTileRight();
+                }
+                
+                else if(i == 4 && j == 6) {
+                    tile = (Tile) tiles.get("skullTile");
+                    tile.rotateTileLeft();
+                }
+                
+                else if(i == 2 && j == 6) {
+                    tile = (Tile) tiles.get("swordTile");
+                    tile.rotateTileLeft();
+                }
+                
+                else if(i == 2 && j ==2) {
+                    tile = (Tile) tiles.get("chestTile");
+                }
+                else if(i == 4 && j ==2) {
+                    tile = (Tile) tiles.get("crownTile");
+                    tile.rotateTileRight();
+                }
+                else if(i == 4 && j ==4) {
+                    tile = (Tile) tiles.get("keyTile");
+                    tile.rotateTileRight();
+                    tile.rotateTileRight();
+                }
+                else if(i == 2 && j ==4) {
+                    tile = (Tile) tiles.get("gemTile");
+                    tile.rotateTileLeft();
+                }
+            
+                grid[i][j] = tile;
+            }       
+        }       
+    }
+    
+    private void generateAllTiles() {
+
+        //blue tile creation
+        Tile blueTile = new Tile(true, false, true, true);
+        blueTile.setFixedTile(true);
+        blueTile.setTileImage(spriteSheet, 0, 0);
+        
+
+        tiles.put("blueTile", blueTile);
+        
+        //green tile creation
+        Tile greenTile = new Tile(false, true, true, false);
+        greenTile.setFixedTile(true);
+        greenTile.setTileImage(spriteSheet, 1, 0);
+
+        tiles.put("greenTile", greenTile);
+        
+        //red tile creation
+        Tile redTile = new Tile(true, false, false, true);
+        redTile.setFixedTile(true);
+        redTile.setTileImage(spriteSheet, 2, 0);
+
+        tiles.put("redTile", redTile);
+        
+        //yellow tile creation
+        Tile yellowTile = new Tile(false, true, false, true);
+        yellowTile.setFixedTile(true);
+        yellowTile.setTileImage(spriteSheet, 3, 0);
+
+        tiles.put("yellowTile", yellowTile);
+        
+        //bat tile creation
+        Tile batTile = new Tile(true, true, true, false);
+        batTile.setFixedTile(false);
+        batTile.setItem("bat");
+        batTile.setTileImage(spriteSheet, 4, 0);
+        
+        tiles.put("batTile", batTile);
+        
+        //bug tile creation
+        Tile bugTile = new Tile(false, true, true, false);
+        bugTile.setFixedTile(false);
+        bugTile.setItem("bug");
+        bugTile.setTileImage(spriteSheet, 5, 0);
+        
+        tiles.put("bugTile", bugTile);
+        
+        //book tile creation
+        Tile bookTile = new Tile(true, true, true, false);
+        bookTile.setFixedTile(true);
+        bookTile.setItem("book");
+        bookTile.setTileImage(spriteSheet, 6, 0);
+        
+        tiles.put("bookTile", bookTile);
+        
+        //ring tile creation
+        Tile ringTile = new Tile(true, true, true, false);
+        ringTile.setFixedTile(true);
+        ringTile.setItem("ring");
+        ringTile.setTileImage(spriteSheet, 7, 0);
+        
+        tiles.put("ringTile", ringTile);
+        
+        //skull tile creation
+        Tile skullTile = new Tile(true, true, true, false);
+        skullTile.setFixedTile(true);
+        skullTile.setItem("skull");
+        skullTile.setTileImage(spriteSheet, 8, 0);
+        
+        tiles.put("skullTile", skullTile);
+        
+        //spider tile creation
+        Tile spiderTile = new Tile(false, true, true, false);
+        spiderTile.setFixedTile(false);
+        spiderTile.setItem("spider");
+        spiderTile.setTileImage(spriteSheet, 9, 0);
+        
+        tiles.put("spiderTile", spiderTile);
+      
+        //candel tile creation
+        Tile candelTile = new Tile(true, true, true, false);
+        candelTile.setFixedTile(true);
+        candelTile.setItem("candel");
+        candelTile.setTileImage(spriteSheet, 0, 1);
+        
+        tiles.put("candelTile", candelTile);
+        
+        //crown tile creation
+        Tile crownTile = new Tile(true, true, true, false);
+        crownTile.setFixedTile(true);
+        crownTile.setItem("crown");
+        crownTile.setTileImage(spriteSheet, 1, 1);
+        
+        tiles.put("crownTile", crownTile);
+        
+        //dragon tile creation
+        Tile dragonTile = new Tile(true, true, true, false);
+        dragonTile.setFixedTile(false);
+        dragonTile.setItem("dragon");
+        dragonTile.setTileImage(spriteSheet, 2, 1);
+        
+        tiles.put("dragonTile", dragonTile);
+        
+        //lamp tile creation
+        Tile lampTile = new Tile(true, true, true, false);
+        lampTile.setFixedTile(false);
+        lampTile.setItem("lamp");
+        lampTile.setTileImage(spriteSheet, 3, 1);
+        
+        tiles.put("lampTile", lampTile);
+        
+        //ghost tile creation
+        Tile ghostTile = new Tile(true, true, true, false);
+        ghostTile.setFixedTile(false);
+        ghostTile.setItem("ghost");
+        ghostTile.setTileImage(spriteSheet, 4, 1);
+        
+        tiles.put("ghostTile", ghostTile);
+        
+        //knight tile creation
+        Tile knightTile = new Tile(true, true, true, false);
+        knightTile.setFixedTile(true);
+        knightTile.setItem("knight");
+        knightTile.setTileImage(spriteSheet, 5, 1);
+        
+        tiles.put("knightTile", knightTile);
+        
+        //gem tile creation
+        Tile gemTile = new Tile(true, true, true, false);
+        gemTile.setFixedTile(true);
+        gemTile.setItem("gem");
+        gemTile.setTileImage(spriteSheet, 6, 1);
+        
+        tiles.put("gemTile", gemTile);
+        
+        //sword tile creation
+        Tile swordTile = new Tile(true, true, true, false);
+        swordTile.setFixedTile(true);
+        swordTile.setItem("sword");
+        swordTile.setTileImage(spriteSheet, 7, 1);
+       
+        tiles.put("swordTile", swordTile);
+        
+        //chest tile creation
+        Tile chestTile = new Tile(true, true, true, false);
+        chestTile.setFixedTile(true);
+        chestTile.setItem("chest");
+        chestTile.setTileImage(spriteSheet, 8, 1);
+        
+        tiles.put("chestTile", chestTile);
+        
+        //orc tile creation
+        Tile orcTile = new Tile(true, true, true, false);
+        orcTile.setFixedTile(false);
+        orcTile.setItem("orc");
+        orcTile.setTileImage(spriteSheet, 9, 1);
+        
+        tiles.put("orcTile", orcTile);
+        
+        //key tile creation
+        Tile keyTile = new Tile(true, true, true, false);
+        keyTile.setFixedTile(true);
+        keyTile.setItem("key");
+        keyTile.setTileImage(spriteSheet, 0, 2);
+        
+        tiles.put("keyTile", keyTile);
+        
+        //lizard tile creation
+        Tile lizardTile = new Tile(false, true, true, false);
+        lizardTile.setFixedTile(false);
+        lizardTile.setItem("lizard");
+        lizardTile.setTileImage(spriteSheet, 1, 2);
+        
+        tiles.put("lizardTile", lizardTile);
+        
+        //map tile creation
+        Tile mapTile = new Tile(true, true, true, false);
+        mapTile.setFixedTile(true);
+        mapTile.setItem("map");
+        mapTile.setTileImage(spriteSheet, 2, 2);
+        
+        tiles.put("mapTile", mapTile);
+        
+        //money tile creation
+        Tile moneyTile = new Tile(true, true, true, false);
+        moneyTile.setFixedTile(true);
+        moneyTile.setItem("money");
+        moneyTile.setTileImage(spriteSheet, 3, 2);
+        
+        tiles.put("moneyTile", moneyTile);
+        
+        //moth tile creation
+        Tile mothTile = new Tile(false, true, true, false);
+        mothTile.setFixedTile(false);
+        mothTile.setItem("moth");
+        mothTile.setTileImage(spriteSheet, 4, 2);
+        
+        tiles.put("mothTile", mothTile);
+        
+        //owl tile creation
+        Tile owlTile = new Tile(false, true, true, false);
+        owlTile.setFixedTile(false);
+        owlTile.setItem("owl");
+        owlTile.setTileImage(spriteSheet, 5, 2);
+        
+        tiles.put("owlTile", owlTile);
+        
+        //mouse tile creation
+        Tile mouseTile = new Tile(false, true, true, false);
+        mouseTile.setFixedTile(false);
+        mouseTile.setItem("mouse");
+        mouseTile.setTileImage(spriteSheet, 6, 2);
+        
+        tiles.put("mouseTile", mouseTile);
+        
+        //wizard tile creation
+        Tile wizardTile = new Tile(true, true, true, false);
+        wizardTile.setFixedTile(false);
+        wizardTile.setItem("wizard");
+        wizardTile.setTileImage(spriteSheet, 7, 2);
+        
+        tiles.put("wizardTile", wizardTile);
+        
+        //i tile creation X 12
+        for(int i = 0; i < 12; i++) {
+            Tile iTile = new Tile(false, false, true, true);
+            iTile.setFixedTile(false);
+            iTile.setTileImage(spriteSheet, 8, 2);
+        
+            tiles.put("iTile" + i, iTile);
+        }
+        
+        //L tile creation X 10
+        for(int i = 0; i < 10; i++) {
+            Tile lTile = new Tile(false, true, true, false);
+            lTile.setFixedTile(false);
+            lTile.setTileImage(spriteSheet, 9, 2);
+        
+            tiles.put("lTile" + i, lTile);
+        }    
+    } 
+    
+    public Tile getNextTile() {
+        return nextTile;
+    }
 }
