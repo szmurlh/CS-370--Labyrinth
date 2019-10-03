@@ -19,7 +19,6 @@ public class Tile {
     private boolean leftPath;
     private boolean rightPath;
     
-    private boolean playerOnTile;
     private boolean fixedTile;
     private String item;
     
@@ -86,14 +85,6 @@ public class Tile {
 
     public void setRightPath(boolean rightPath) {
         this.rightPath = rightPath;
-    }
-
-    public boolean isPlayerOnTile() {
-        return playerOnTile;
-    }
-
-    public void setPlayerOnTile(boolean playerOnTile) {
-        this.playerOnTile = playerOnTile;
     }
 
     public String getItem() {
