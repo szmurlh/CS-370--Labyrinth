@@ -11,7 +11,7 @@ import com.badlogic.gdx.graphics.g2d.SpriteBatch;
 import com.badlogic.gdx.graphics.g2d.TextureRegion;
 import com.badlogic.gdx.scenes.scene2d.InputEvent;
 import com.badlogic.gdx.scenes.scene2d.InputListener;
-import com.badlogic.gdx.scenes.scene2d.Stage;
+
 import com.badlogic.gdx.scenes.scene2d.ui.Button;
 import com.badlogic.gdx.scenes.scene2d.ui.ImageButton;
 import com.badlogic.gdx.scenes.scene2d.ui.Skin;
@@ -22,7 +22,7 @@ import java.util.ArrayList;
 
 public class MyGdxGame extends ApplicationAdapter {
 
-                  private Stage stage;
+                
                   private SpriteBatch batch;
                   private Texture img;
                   private Sprite sprite;
@@ -39,7 +39,7 @@ public class MyGdxGame extends ApplicationAdapter {
                     cam = new OrthographicCamera(1000, 640);
                     batch = new SpriteBatch();
                     ScreenViewport view = new ScreenViewport(cam);
-                    stage = new Stage(view, batch);
+                  
                     
            
                     cam = new OrthographicCamera(1000, 640);
@@ -47,8 +47,8 @@ public class MyGdxGame extends ApplicationAdapter {
                     
                     gameBoard = new Board();
 
-                    Gdx.input.setInputProcessor(stage);
-                                       
+                    
+                                       ;
 	}
         
         
@@ -60,7 +60,7 @@ public class MyGdxGame extends ApplicationAdapter {
                     Gdx.gl.glClear(GL20.GL_COLOR_BUFFER_BIT);
                                     
                     batch.setProjectionMatrix(cam.combined);
-                    stage.act();
+                    
                     batch.begin();
 
                     
@@ -77,13 +77,10 @@ public class MyGdxGame extends ApplicationAdapter {
                         }
                     }
                     
-                    Tile nextTile = gameBoard.getNextTile();
-                    sprite = nextTile.getTileImage();
-                    sprite.setBounds(250, -100, 128, 128);
-                    sprite.draw(batch);
+                   
                     
                     batch.end();
-                    stage.draw();
+                  
                   } 
 	
 	@Override
