@@ -8,7 +8,10 @@ package com.cs370.labyrinth;
 import com.badlogic.gdx.graphics.Texture;
 import java.util.ArrayList;
 import java.util.Collection;
+import java.util.Collections;
 import java.util.HashMap;
+import java.util.Vector;
+
 
 /**
  *
@@ -248,85 +251,96 @@ public class Board {
             }
         }   
      }    
-    
     private void populateFixedTileGrid() {
         
         for(int i = 0; i < 7; i++) {
             for(int j = 0; j < 7; j++) {
                 Tile tile = new Tile(); 
-        
-                if(i == 6 && j == 0) {
-                    tile = (Tile) tiles.get("yellowTile");
+                if( i == 0){
+                    switch (j) {
+                        case 0:
+                            tile = (Tile) tiles.get("greenTile");
+                            break;
+                        case 2:
+                            tile = (Tile) tiles.get("candelTile");
+                            break;
+                        case 4:
+                            tile = (Tile) tiles.get("knightTile");
+                            break;
+                        case 6:
+                            tile = (Tile) tiles.get("blueTile");
+                        default:
+                            break;
+                    }
+                }
+                if ( i == 2){
+                    switch(j){
+                        case 0:
+                            tile = (Tile) tiles.get("ringTile");
+                            tile.rotateTileRight();
+                            break;
+                        case 2:
+                             tile = (Tile) tiles.get("chestTile");
+                             break;
+                        case 4:
+                            tile = (Tile) tiles.get("gemTile");
+                            tile.rotateTileLeft();
+                            break;
+                        case 6:
+                            tile = (Tile) tiles.get("swordTile");
+                            tile.rotateTileLeft();
+                            break;
+                        default:
+                            break;
+                    }
+                }
+                if( i == 4){
+                    switch(j){
+                        case 0:
+                            tile = (Tile) tiles.get("mapTile");
+                            tile.rotateTileRight();
+                            break;
+                        case 2:
+                            tile = (Tile) tiles.get("crownTile");
+                            tile.rotateTileRight();
+                            break;
+                        case 4:
+                            tile = (Tile) tiles.get("keyTile");
+                            tile.rotateTileRight();
+                            tile.rotateTileRight();
+                            break;
+                        case 6:
+                            tile = (Tile) tiles.get("skullTile");
+                            tile.rotateTileLeft();
+                            break;
+                        default:
+                            break;
+                            
+                    }
                 }
                 
-                else if(i == 0 && j == 0) {
-                    tile = (Tile) tiles.get("greenTile");
-                }
-                
-                else if(i == 6 && j == 6) {
-                    tile = (Tile) tiles.get("redTile");
-                }
-                
-                else if(i == 0 && j == 6) {
-                    tile = (Tile) tiles.get("blueTile");
-                }
-                
-                else if(i == 0 && j == 2) {
-                    tile = (Tile) tiles.get("candelTile");
-                }
-                
-                else if(i == 0 && j == 4) {
-                    tile = (Tile) tiles.get("knightTile");
-                }
-                
-                else if(i == 2 && j == 0) {
-                    tile = (Tile) tiles.get("ringTile");
-                    tile.rotateTileRight();
-                }
-                
-                else if(i == 4 && j == 0) {
-                    tile = (Tile) tiles.get("mapTile");
-                    tile.rotateTileRight();
-                }
-                
-                else if(i == 6 && j == 2) {
-                    tile = (Tile) tiles.get("bookTile");
-                    tile.rotateTileRight();
-                    tile.rotateTileRight();
-                }
-                
-                else if(i == 6 && j == 4) {
-                    tile = (Tile) tiles.get("moneyTile");
-                    tile.rotateTileRight();
-                    tile.rotateTileRight();
-                }
-                
-                else if(i == 4 && j == 6) {
-                    tile = (Tile) tiles.get("skullTile");
-                    tile.rotateTileLeft();
-                }
-                
-                else if(i == 2 && j == 6) {
-                    tile = (Tile) tiles.get("swordTile");
-                    tile.rotateTileLeft();
-                }
-                
-                else if(i == 2 && j ==2) {
-                    tile = (Tile) tiles.get("chestTile");
-                }
-                else if(i == 4 && j ==2) {
-                    tile = (Tile) tiles.get("crownTile");
-                    tile.rotateTileRight();
-                }
-                else if(i == 4 && j ==4) {
-                    tile = (Tile) tiles.get("keyTile");
-                    tile.rotateTileRight();
-                    tile.rotateTileRight();
-                }
-                else if(i == 2 && j ==4) {
-                    tile = (Tile) tiles.get("gemTile");
-                    tile.rotateTileLeft();
-                }
+                if(i == 6){
+                    switch(j){
+                        case 0:
+                            tile = (Tile) tiles.get("yellowTile");
+                            break;
+                        case 2:
+                            tile = (Tile) tiles.get("bookTile");
+                            tile.rotateTileRight();
+                            tile.rotateTileRight();
+                            break;
+                        case 4:
+                            tile = (Tile) tiles.get("moneyTile");
+                            tile.rotateTileRight();
+                            tile.rotateTileRight();
+                            break;
+                        case 6:
+                            tile = (Tile) tiles.get("redTile");
+                            break;
+                        default:
+                            break;
+                    }
+                } 
             
                 grid[i][j] = tile;
             }       
