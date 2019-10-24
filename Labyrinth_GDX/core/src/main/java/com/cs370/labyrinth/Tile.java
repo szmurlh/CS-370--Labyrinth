@@ -14,11 +14,14 @@ import com.badlogic.gdx.graphics.g2d.Sprite;
  */
 public class Tile {
     
+    private String name;
+    
     private boolean topPath;
     private boolean bottomPath;
     private boolean leftPath;
     private boolean rightPath;
     
+    private boolean playerOnTile = false;
     private boolean fixedTile;
     private String item;
     
@@ -42,7 +45,9 @@ public class Tile {
         rightPath = topPath;
         topPath = leftPathCopy;
         
-        tileImage.rotate90(true);
+        if(tileImage != null) {
+            tileImage.rotate90(false);
+        }
     }
     
     public void rotateTileLeft() {
@@ -52,7 +57,9 @@ public class Tile {
         rightPath = bottomPath;
         bottomPath = leftPathCopy;
         
-        tileImage.rotate90(false);
+        if(tileImage != null) {
+            tileImage.rotate90(false);
+        }
     }
     
     public boolean isTopPath() {
@@ -108,7 +115,26 @@ public class Tile {
     }
 
     public void setTileImage(Texture spriteSheet, int x, int y) {
-        Sprite tileImage = new Sprite(spriteSheet, 126 * x , 126 * y, 126, 126);
-        this.tileImage = tileImage;
+        if(spriteSheet != null) {
+            Sprite tileImage = new Sprite(spriteSheet, 126 * x , 126 * y, 126, 126);
+            this.tileImage = tileImage;
+        }
     }
+
+    public boolean isPlayerOnTile() {
+        return playerOnTile;
+    }
+
+    public void setPlayerOnTile(boolean playerOnTile) {
+        this.playerOnTile = playerOnTile;
+    }
+
+    public String getName() {
+        return name;
+    }
+
+    public void setName(String name) {
+        this.name = name;
+    }
+    
 }

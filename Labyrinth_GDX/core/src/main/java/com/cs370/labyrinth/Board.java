@@ -26,7 +26,20 @@ public class Board {
   
     public Board() {
         
-        spriteSheet = new Texture("spritesheet_small.png");
+        nextTile = new Tile(true, true, true, true);
+        nextTile.setTileImage(spriteSheet, 0, 0);
+        
+        tiles = new HashMap();
+        grid = new Tile [7][7];
+
+        generateAllTiles();
+        populateFixedTileGrid();
+        populateMovableTileGrid();
+    }
+    
+    public Board(String spriteSheetFile) {
+        
+        spriteSheet = new Texture(spriteSheetFile);
         
         nextTile = new Tile(true, true, true, true);
         nextTile.setTileImage(spriteSheet, 0, 0);
@@ -39,6 +52,129 @@ public class Board {
         populateMovableTileGrid();
     }
     
+    public Tile getPlayerLocation() {
+        
+        Tile tileWithPlayer = new Tile();
+        Collection<Tile> tileHashMapValues = tiles.values();
+        
+        for(Tile tile: tileHashMapValues) {
+            if(tile.isPlayerOnTile()) {
+                tileWithPlayer = tile;
+            }
+        }
+        
+        return tileWithPlayer;
+    }
+    
+    public boolean canPlayerMoveLeft(Tile tile) {
+        int row = 0;
+        int column = 0;
+        
+        for(int i = 0; i < 7; i++) {
+            for(int j = 0; j < 7; j++) {
+                
+                if( grid[i][j] == tile) {
+                    row = i;
+                    column = j;
+                }
+            }
+        }
+        
+        System.out.println("Gem Tile: " + grid[row][column].isLeftPath());
+        System.out.println("Gem Tile: " + grid[row][column].isTopPath());
+        System.out.println("Gem Tile: " + grid[row][column].isRightPath());
+        System.out.println("Gem Tile: " + grid[row][column].isBottomPath());
+        
+        if(column == 0) {
+            return false;
+        }
+    
+        else if(grid[row][column].isLeftPath() && grid[row][column-1].isRightPath()) {
+            return true;
+        }
+        
+        return false;
+    }
+    
+    public boolean canPlayerMoveRight(Tile tile) {
+        int row = 0;
+        int column = 0;
+        
+        for(int i = 0; i < 7; i++) {
+            for(int j = 0; j < 7; j++) {
+                
+                if( grid[i][j] == tile) {
+                    row = i;
+                    column = j;
+                }
+            }
+        }
+        
+        System.out.println("Right Tile: " + grid[row][column + 1].isLeftPath());
+        System.out.println("Right Tile: " + grid[row][column + 1].isTopPath());
+        System.out.println("Right Tile: " + grid[row][column + 1].isRightPath());
+        System.out.println("Right Tile: " + grid[row][column + 1].isBottomPath());
+        
+        if(column == 6) {
+            return false;
+        }
+        
+        else if(grid[row][column].isRightPath() && grid[row][column+1].isLeftPath()) {
+            return true;
+        }
+        
+        return false;
+    }
+    
+    public boolean canPlayerMoveUp(Tile tile) {
+        int row = 0;
+        int column = 0;
+        
+        for(int i = 0; i < 7; i++) {
+            for(int j = 0; j < 7; j++) {
+                
+                if( grid[i][j] == tile) {
+                    row = i;
+                    column = j;
+                }
+            }
+        }
+        
+        if(row == 6) {
+            return false;
+        }
+        
+        else if(grid[row][column].isTopPath() && grid[row + 1][column].isBottomPath()) {
+            return true;
+        }
+        
+        return false;
+    }
+    
+        public boolean canPlayerMoveDown(Tile tile) {
+        int row = 0;
+        int column = 0;
+        
+        for(int i = 0; i < 7; i++) {
+            for(int j = 0; j < 7; j++) {
+                
+                if( grid[i][j] == tile) {
+                    row = i;
+                    column = j;
+                }
+            }
+        }
+        
+        if(row == 6) {
+            return false;
+        }
+        
+        else if(grid[row][column].isBottomPath() && grid[row - 1][column].isTopPath()) {
+            return true;
+        }
+        
+        return false;
+    }
     
     public Tile getTile(int row, int col) {
 
@@ -65,8 +201,7 @@ public class Board {
         grid[0][col] = nextTile;
       
         
-        nextTile = poppedTile;
-        
+        nextTile = poppedTile; 
     }
     
     public void pushTileDown(int col){
@@ -87,9 +222,7 @@ public class Board {
         
         grid[6][col] = nextTile;
         
-        nextTile = poppedTile;
-
-        
+        nextTile = poppedTile; 
     }
     
     public void pushTileRight(int row){
@@ -110,7 +243,6 @@ public class Board {
         grid[row][0] = nextTile;
         
         nextTile = poppedTile;
-        
     }
 
     public void pushTileLeft(int row){
@@ -251,6 +383,7 @@ public class Board {
             }
         }   
      }    
+    
     private void populateFixedTileGrid() {
         
         for(int i = 0; i < 7; i++) {
@@ -352,8 +485,8 @@ public class Board {
         //blue tile creation
         Tile blueTile = new Tile(true, false, true, true);
         blueTile.setFixedTile(true);
-        blueTile.setTileImage(spriteSheet, 0, 0);
-        
+        blueTile.setTileImage(spriteSheet, 0, 0); 
+        blueTile.setName("blueTile");
 
         tiles.put("blueTile", blueTile);
         
@@ -361,6 +494,7 @@ public class Board {
         Tile greenTile = new Tile(false, true, true, false);
         greenTile.setFixedTile(true);
         greenTile.setTileImage(spriteSheet, 1, 0);
+        greenTile.setName("greenTile");
 
         tiles.put("greenTile", greenTile);
         
@@ -368,6 +502,7 @@ public class Board {
         Tile redTile = new Tile(true, false, false, true);
         redTile.setFixedTile(true);
         redTile.setTileImage(spriteSheet, 2, 0);
+        redTile.setName("redTile");
 
         tiles.put("redTile", redTile);
         
@@ -375,6 +510,7 @@ public class Board {
         Tile yellowTile = new Tile(false, true, false, true);
         yellowTile.setFixedTile(true);
         yellowTile.setTileImage(spriteSheet, 3, 0);
+        yellowTile.setName("yellowTile");
 
         tiles.put("yellowTile", yellowTile);
         
@@ -383,6 +519,7 @@ public class Board {
         batTile.setFixedTile(false);
         batTile.setItem("bat");
         batTile.setTileImage(spriteSheet, 4, 0);
+        batTile.setName("batTile");
         
         tiles.put("batTile", batTile);
         
@@ -391,6 +528,7 @@ public class Board {
         bugTile.setFixedTile(false);
         bugTile.setItem("bug");
         bugTile.setTileImage(spriteSheet, 5, 0);
+        bugTile.setName("bugTile");
         
         tiles.put("bugTile", bugTile);
         
@@ -399,6 +537,7 @@ public class Board {
         bookTile.setFixedTile(true);
         bookTile.setItem("book");
         bookTile.setTileImage(spriteSheet, 6, 0);
+        bookTile.setName("bookTile");
         
         tiles.put("bookTile", bookTile);
         
@@ -407,6 +546,7 @@ public class Board {
         ringTile.setFixedTile(true);
         ringTile.setItem("ring");
         ringTile.setTileImage(spriteSheet, 7, 0);
+        ringTile.setName("ringTile");
         
         tiles.put("ringTile", ringTile);
         
@@ -415,6 +555,7 @@ public class Board {
         skullTile.setFixedTile(true);
         skullTile.setItem("skull");
         skullTile.setTileImage(spriteSheet, 8, 0);
+        skullTile.setName("skullTile");
         
         tiles.put("skullTile", skullTile);
         
@@ -423,6 +564,7 @@ public class Board {
         spiderTile.setFixedTile(false);
         spiderTile.setItem("spider");
         spiderTile.setTileImage(spriteSheet, 9, 0);
+        spiderTile.setName("spiderTile");
         
         tiles.put("spiderTile", spiderTile);
       
@@ -431,6 +573,7 @@ public class Board {
         candelTile.setFixedTile(true);
         candelTile.setItem("candel");
         candelTile.setTileImage(spriteSheet, 0, 1);
+        candelTile.setName("candelTile");
         
         tiles.put("candelTile", candelTile);
         
@@ -439,6 +582,7 @@ public class Board {
         crownTile.setFixedTile(true);
         crownTile.setItem("crown");
         crownTile.setTileImage(spriteSheet, 1, 1);
+        crownTile.setName("crownTile");
         
         tiles.put("crownTile", crownTile);
         
@@ -447,6 +591,7 @@ public class Board {
         dragonTile.setFixedTile(false);
         dragonTile.setItem("dragon");
         dragonTile.setTileImage(spriteSheet, 2, 1);
+        dragonTile.setName("dragonTile");
         
         tiles.put("dragonTile", dragonTile);
         
@@ -455,6 +600,7 @@ public class Board {
         lampTile.setFixedTile(false);
         lampTile.setItem("lamp");
         lampTile.setTileImage(spriteSheet, 3, 1);
+        lampTile.setName("lampTile");
         
         tiles.put("lampTile", lampTile);
         
@@ -463,6 +609,7 @@ public class Board {
         ghostTile.setFixedTile(false);
         ghostTile.setItem("ghost");
         ghostTile.setTileImage(spriteSheet, 4, 1);
+        ghostTile.setName("ghostTile");
         
         tiles.put("ghostTile", ghostTile);
         
@@ -471,6 +618,7 @@ public class Board {
         knightTile.setFixedTile(true);
         knightTile.setItem("knight");
         knightTile.setTileImage(spriteSheet, 5, 1);
+        knightTile.setName("knightTile");
         
         tiles.put("knightTile", knightTile);
         
@@ -479,6 +627,8 @@ public class Board {
         gemTile.setFixedTile(true);
         gemTile.setItem("gem");
         gemTile.setTileImage(spriteSheet, 6, 1);
+        gemTile.setName("gemTile");
+        gemTile.setPlayerOnTile(true);
         
         tiles.put("gemTile", gemTile);
         
@@ -487,6 +637,7 @@ public class Board {
         swordTile.setFixedTile(true);
         swordTile.setItem("sword");
         swordTile.setTileImage(spriteSheet, 7, 1);
+        swordTile.setName("swordTile");
        
         tiles.put("swordTile", swordTile);
         
@@ -495,6 +646,7 @@ public class Board {
         chestTile.setFixedTile(true);
         chestTile.setItem("chest");
         chestTile.setTileImage(spriteSheet, 8, 1);
+        chestTile.setName("chestTile");
         
         tiles.put("chestTile", chestTile);
         
@@ -503,6 +655,7 @@ public class Board {
         orcTile.setFixedTile(false);
         orcTile.setItem("orc");
         orcTile.setTileImage(spriteSheet, 9, 1);
+        orcTile.setName("orcTile");
         
         tiles.put("orcTile", orcTile);
         
@@ -511,6 +664,7 @@ public class Board {
         keyTile.setFixedTile(true);
         keyTile.setItem("key");
         keyTile.setTileImage(spriteSheet, 0, 2);
+        keyTile.setName("keyTile");
         
         tiles.put("keyTile", keyTile);
         
@@ -519,6 +673,7 @@ public class Board {
         lizardTile.setFixedTile(false);
         lizardTile.setItem("lizard");
         lizardTile.setTileImage(spriteSheet, 1, 2);
+        lizardTile.setName("lizardTile");
         
         tiles.put("lizardTile", lizardTile);
         
@@ -527,6 +682,7 @@ public class Board {
         mapTile.setFixedTile(true);
         mapTile.setItem("map");
         mapTile.setTileImage(spriteSheet, 2, 2);
+        mapTile.setName("mapTile");
         
         tiles.put("mapTile", mapTile);
         
@@ -535,6 +691,7 @@ public class Board {
         moneyTile.setFixedTile(true);
         moneyTile.setItem("money");
         moneyTile.setTileImage(spriteSheet, 3, 2);
+        moneyTile.setName("moneyTile");
         
         tiles.put("moneyTile", moneyTile);
         
@@ -543,6 +700,7 @@ public class Board {
         mothTile.setFixedTile(false);
         mothTile.setItem("moth");
         mothTile.setTileImage(spriteSheet, 4, 2);
+        mothTile.setName("mothTile");
         
         tiles.put("mothTile", mothTile);
         
@@ -551,6 +709,7 @@ public class Board {
         owlTile.setFixedTile(false);
         owlTile.setItem("owl");
         owlTile.setTileImage(spriteSheet, 5, 2);
+        owlTile.setName("owlTile");
         
         tiles.put("owlTile", owlTile);
         
@@ -559,6 +718,7 @@ public class Board {
         mouseTile.setFixedTile(false);
         mouseTile.setItem("mouse");
         mouseTile.setTileImage(spriteSheet, 6, 2);
+        mouseTile.setName("mouseTile");
         
         tiles.put("mouseTile", mouseTile);
         
@@ -567,6 +727,7 @@ public class Board {
         wizardTile.setFixedTile(false);
         wizardTile.setItem("wizard");
         wizardTile.setTileImage(spriteSheet, 7, 2);
+        wizardTile.setName("wizardTile");
         
         tiles.put("wizardTile", wizardTile);
         
@@ -575,6 +736,7 @@ public class Board {
             Tile iTile = new Tile(false, false, true, true);
             iTile.setFixedTile(false);
             iTile.setTileImage(spriteSheet, 8, 2);
+            iTile.setName("iTile" + i);
         
             tiles.put("iTile" + i, iTile);
         }
@@ -584,6 +746,7 @@ public class Board {
             Tile lTile = new Tile(false, true, true, false);
             lTile.setFixedTile(false);
             lTile.setTileImage(spriteSheet, 9, 2);
+            lTile.setName("lTile" + i);
         
             tiles.put("lTile" + i, lTile);
         }    
@@ -591,5 +754,13 @@ public class Board {
     
     public Tile getNextTile() {
         return nextTile;
+    }
+
+    public HashMap getTiles() {
+        return tiles;
+    }
+
+    public void setTiles(HashMap tiles) {
+        this.tiles = tiles;
     }
 }

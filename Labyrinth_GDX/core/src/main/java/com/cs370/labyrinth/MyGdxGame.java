@@ -32,7 +32,14 @@ public class MyGdxGame extends ApplicationAdapter {
            
                     cam = new OrthographicCamera(1000, 640);
 
-                    gameBoard = new Board();
+                    gameBoard = new Board("spritesheet_small.png");
+                    
+                    Tile playerOnTile = gameBoard.getPlayerLocation();
+                    
+                    System.out.println(gameBoard.canPlayerMoveLeft(playerOnTile));
+                    System.out.println(gameBoard.canPlayerMoveUp(playerOnTile));
+                    System.out.println(gameBoard.canPlayerMoveRight(playerOnTile));
+                    System.out.println(gameBoard.canPlayerMoveDown(playerOnTile));
                              
 	}
         
@@ -52,11 +59,12 @@ public class MyGdxGame extends ApplicationAdapter {
                         for(int j = 0; j < 7; j++) {
   
                             Tile tile = gameBoard.getTile(i, j);
-                                            
-                            sprite = tile.getTileImage();
-                            sprite.setBounds((66 * i) - 300, (66 * j) - 184, 64, 64);
-                            sprite.draw(batch);
-                            
+
+                            if(tile.getTileImage() != null) {
+                                sprite = tile.getTileImage();
+                                sprite.setBounds((66 * i) - 400, (66 * j) - 210, 64, 64);
+                                sprite.draw(batch);
+                            }
                         }
                     }
 
