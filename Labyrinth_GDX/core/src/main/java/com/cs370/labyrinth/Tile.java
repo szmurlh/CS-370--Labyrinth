@@ -46,7 +46,7 @@ public class Tile {
         topPath = leftPathCopy;
         
         if(tileImage != null) {
-            tileImage.rotate90(false);
+            tileImage.rotate90(true);
         }
     }
     

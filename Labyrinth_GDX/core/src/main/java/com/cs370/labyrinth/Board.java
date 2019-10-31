@@ -8,9 +8,7 @@ package com.cs370.labyrinth;
 import com.badlogic.gdx.graphics.Texture;
 import java.util.ArrayList;
 import java.util.Collection;
-import java.util.Collections;
 import java.util.HashMap;
-import java.util.Vector;
 
 
 /**
@@ -25,10 +23,7 @@ public class Board {
     private Tile nextTile;
   
     public Board() {
-        
-        nextTile = new Tile(true, true, true, true);
-        nextTile.setTileImage(spriteSheet, 0, 0);
-        
+
         tiles = new HashMap();
         grid = new Tile [7][7];
 
@@ -40,9 +35,6 @@ public class Board {
     public Board(String spriteSheetFile) {
         
         spriteSheet = new Texture(spriteSheetFile);
-        
-        nextTile = new Tile(true, true, true, true);
-        nextTile.setTileImage(spriteSheet, 0, 0);
         
         tiles = new HashMap();
         grid = new Tile [7][7];
@@ -66,74 +58,83 @@ public class Board {
         return tileWithPlayer;
     }
     
-    public boolean canPlayerMoveLeft(Tile tile) {
+    public boolean canPlayerMoveLeft(Tile currentTile, boolean movePlayer) {
+        
         int row = 0;
         int column = 0;
         
         for(int i = 0; i < 7; i++) {
             for(int j = 0; j < 7; j++) {
                 
-                if( grid[i][j] == tile) {
+                if( grid[i][j] == currentTile) {
                     row = i;
                     column = j;
                 }
             }
         }
         
-        System.out.println("Gem Tile: " + grid[row][column].isLeftPath());
-        System.out.println("Gem Tile: " + grid[row][column].isTopPath());
-        System.out.println("Gem Tile: " + grid[row][column].isRightPath());
-        System.out.println("Gem Tile: " + grid[row][column].isBottomPath());
-        
         if(column == 0) {
             return false;
         }
+        
+        Tile tileToMoveTo = grid[row][column - 1];
     
-        else if(grid[row][column].isLeftPath() && grid[row][column-1].isRightPath()) {
+        if(currentTile.isLeftPath() && tileToMoveTo.isRightPath()) {
+            
+            if(movePlayer == true) {
+                currentTile.setPlayerOnTile(false);
+                tileToMoveTo.setPlayerOnTile(true);
+            } 
+            
             return true;
         }
         
         return false;
     }
     
-    public boolean canPlayerMoveRight(Tile tile) {
+    public boolean canPlayerMoveRight(Tile currentTile, boolean movePlayer) {
+        
         int row = 0;
         int column = 0;
         
         for(int i = 0; i < 7; i++) {
             for(int j = 0; j < 7; j++) {
                 
-                if( grid[i][j] == tile) {
+                if( grid[i][j] == currentTile) {
                     row = i;
                     column = j;
                 }
             }
         }
-        
-        System.out.println("Right Tile: " + grid[row][column + 1].isLeftPath());
-        System.out.println("Right Tile: " + grid[row][column + 1].isTopPath());
-        System.out.println("Right Tile: " + grid[row][column + 1].isRightPath());
-        System.out.println("Right Tile: " + grid[row][column + 1].isBottomPath());
         
         if(column == 6) {
             return false;
         }
         
-        else if(grid[row][column].isRightPath() && grid[row][column+1].isLeftPath()) {
+        Tile tileToMoveTo = grid[row][column + 1];
+        
+        if(currentTile.isRightPath() && tileToMoveTo.isLeftPath()) {
+            
+            if(movePlayer == true) {
+                currentTile.setPlayerOnTile(false);
+                tileToMoveTo.setPlayerOnTile(true);
+            } 
+            
             return true;
         }
         
         return false;
     }
     
-    public boolean canPlayerMoveUp(Tile tile) {
+    public boolean canPlayerMoveUp(Tile currentTile, boolean movePlayer) {
+        
         int row = 0;
         int column = 0;
         
         for(int i = 0; i < 7; i++) {
             for(int j = 0; j < 7; j++) {
                 
-                if( grid[i][j] == tile) {
+                if( grid[i][j] == currentTile) {
                     row = i;
                     column = j;
                 }
@@ -144,38 +145,55 @@ public class Board {
             return false;
         }
         
-        else if(grid[row][column].isTopPath() && grid[row + 1][column].isBottomPath()) {
+        Tile tileToMoveTo = grid[row + 1][column];
+        
+        if(currentTile.isTopPath() && tileToMoveTo.isBottomPath()) {
+            
+            if(movePlayer == true) {
+                currentTile.setPlayerOnTile(false);
+                tileToMoveTo.setPlayerOnTile(true);
+            }
+            
             return true;
         }
         
         return false;
     }
     
-        public boolean canPlayerMoveDown(Tile tile) {
+    public boolean canPlayerMoveDown(Tile currentTile, boolean movePlayer) {
+        
         int row = 0;
         int column = 0;
         
         for(int i = 0; i < 7; i++) {
             for(int j = 0; j < 7; j++) {
                 
-                if( grid[i][j] == tile) {
+                if( grid[i][j] == currentTile) {
                     row = i;
                     column = j;
                 }
             }
         }
         
-        if(row == 6) {
+        if(row == 0) {
             return false;
         }
         
-        else if(grid[row][column].isBottomPath() && grid[row - 1][column].isTopPath()) {
+        Tile tileToMoveTo = grid[row - 1][column];
+        
+        if(currentTile.isBottomPath() && tileToMoveTo.isTopPath()) {
+            
+            if(movePlayer == true) {
+                currentTile.setPlayerOnTile(false);
+                tileToMoveTo.setPlayerOnTile(true);
+            }    
+            
             return true;
         }
         
         return false;
     }
-    
+   
     public Tile getTile(int row, int col) {
 
         Tile tile = grid[col][row];
@@ -377,6 +395,16 @@ public class Board {
                         tile.rotateTileRight();
                         randomRotationNumber--;
                     }
+        
+                    if(numOfItemTiles > 0) {
+                        this.nextTile = movableItemTiles.get(0);
+                    }
+                    else if(numOfLTiles > 0) {
+                        this.nextTile = (Tile) tiles.get("lTile0");
+                    }
+                    else if(numOfITiles > 0) {
+                        this.nextTile = (Tile) tiles.get("iTile0");
+                    }
                     
                     grid[i][j] = tile;
                 }
@@ -487,6 +515,7 @@ public class Board {
         blueTile.setFixedTile(true);
         blueTile.setTileImage(spriteSheet, 0, 0); 
         blueTile.setName("blueTile");
+        blueTile.setPlayerOnTile(true);
 
         tiles.put("blueTile", blueTile);
         
@@ -628,7 +657,6 @@ public class Board {
         gemTile.setItem("gem");
         gemTile.setTileImage(spriteSheet, 6, 1);
         gemTile.setName("gemTile");
-        gemTile.setPlayerOnTile(true);
         
         tiles.put("gemTile", gemTile);
         
