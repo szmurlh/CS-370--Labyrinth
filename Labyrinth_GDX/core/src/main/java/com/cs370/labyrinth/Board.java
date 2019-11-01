@@ -202,8 +202,9 @@ public class Board {
     }
     
     public void pushTileUp(int col) {
-        Tile poppedTile = grid[6][col];
         
+        Tile poppedTile = grid[6][col];
+             
         grid[6][col] = grid[5][col];
         
         grid[5][col] = grid[4][col];
@@ -218,6 +219,11 @@ public class Board {
         
         grid[0][col] = nextTile;
       
+        //send the player to the other side of the board
+        if(poppedTile.isPlayerOnTile()) {
+            poppedTile.setPlayerOnTile(false);
+            nextTile.setPlayerOnTile(true);
+        }
         
         nextTile = poppedTile; 
     }
@@ -240,6 +246,12 @@ public class Board {
         
         grid[6][col] = nextTile;
         
+        //send the player to the other side of the board
+        if(poppedTile.isPlayerOnTile()) {
+            poppedTile.setPlayerOnTile(false);
+            nextTile.setPlayerOnTile(true);
+        }
+        
         nextTile = poppedTile; 
     }
     
@@ -260,6 +272,12 @@ public class Board {
         
         grid[row][0] = nextTile;
         
+        //send the player to the other side of the board
+        if(poppedTile.isPlayerOnTile()) {
+            poppedTile.setPlayerOnTile(false);
+            nextTile.setPlayerOnTile(true);
+        }
+        
         nextTile = poppedTile;
     }
 
@@ -279,6 +297,12 @@ public class Board {
         grid[row][5] = grid[row][6];
         
         grid[row][6] = nextTile;
+        
+        //send the player to the other side of the board
+        if(poppedTile.isPlayerOnTile()) {
+            poppedTile.setPlayerOnTile(false);
+            nextTile.setPlayerOnTile(true);
+        }
         
         nextTile = poppedTile;
     }

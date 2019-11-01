@@ -27,6 +27,7 @@ public class MyGdxGame extends ApplicationAdapter {
     private Sprite sprite;
     private Camera cam;
     private Board gameBoard;
+    private CardDeck cardDeck;
     private ArrayList<Button> buttons;
 	
 	@Override
@@ -36,11 +37,11 @@ public class MyGdxGame extends ApplicationAdapter {
         Gdx.graphics.setWindowedMode(1000, 640);
 
         Skin skin = new Skin(Gdx.files.internal("glassy/skin/glassy-ui.json"));
-
         img = new Texture("spritesheet_small.png"); 
-
         buttons = new ArrayList<Button>();
 
+        
+        //Create three buttons for shifting tiles up
         for(int i = 0; i < 3; i++) {
 
             Button button = new TextButton("Push Tile", skin, "small");
@@ -90,6 +91,8 @@ public class MyGdxGame extends ApplicationAdapter {
             }
         });
         
+        
+        //Create three buttons for shifting tiles down
         for(int i = 1; i < 4; i++) {
 
             Button button = new TextButton("Push Tile", skin, "small");
@@ -138,6 +141,8 @@ public class MyGdxGame extends ApplicationAdapter {
             }
         });
 
+        
+        //Create three buttons for shifting tiles to the right
         for(int i = 1; i < 4; i++) {
 
             Button button = new TextButton("Push Tile", skin, "small");
@@ -186,6 +191,8 @@ public class MyGdxGame extends ApplicationAdapter {
             }
         });
 
+        
+        //Create three buttons for shifting tiles to the left
         for(int i = 1; i < 4; i++) {
 
             Button button = new TextButton("Push Tile", skin, "small");
@@ -251,6 +258,8 @@ public class MyGdxGame extends ApplicationAdapter {
 //            }
 //        });
 
+
+        //Create button for next tile rotation
         Button rotateNextTileButton = new TextButton("Rotate Tile", skin, "small");
         rotateNextTileButton.setSize(200, 50);
         rotateNextTileButton.setPosition(725, 150);
@@ -268,22 +277,27 @@ public class MyGdxGame extends ApplicationAdapter {
             }
         });
 
+        
+        //Create batch and setup stage
         cam = new OrthographicCamera(1000, 640);
         batch = new SpriteBatch();
         ScreenViewport view = new ScreenViewport(cam);
         stage = new Stage(view, batch);
+ 
         
+        //Add the buttons to the stage
         for(int i = 0; i < 12; i++) {
             stage.addActor(buttons.get(i));
         }
         
         //stage.addActor(rotateBoardButton);
         stage.addActor(rotateNextTileButton);
-
         cam = new OrthographicCamera(1000, 640);
         
+        //Initialize the game board and card deck
         gameBoard = new Board("spritesheet_small.png");
-
+        cardDeck = new CardDeck("spritesheet_small.png");
+        
         Gdx.input.setInputProcessor(stage);
                                        
     }
@@ -316,6 +330,18 @@ public class MyGdxGame extends ApplicationAdapter {
         sprite = nextTile.getTileImage();
         sprite.setBounds(210, -140, 128, 128);
         sprite.draw(batch);
+        
+        Card nextCard = cardDeck.getCardDeck().peek();
+        sprite = nextCard.getCardImage();
+        sprite.setBounds(210, 60, 128, 128);
+        sprite.draw(batch);
+        
+        //Discard current card and displays the next card when a player lands on
+        // a tile that has the matching item 
+        if(gameBoard.getPlayerLocation().getItem() != null && 
+                gameBoard.getPlayerLocation().getItem().equals(nextCard.getCardItem())) {
+            cardDeck.getCardDeck().pop();
+        }
         
         if(Gdx.input.isKeyPressed(Keys.UP)) {
             Tile currentTile = gameBoard.getPlayerLocation();
