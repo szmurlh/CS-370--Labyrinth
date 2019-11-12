@@ -16,14 +16,12 @@ import java.util.Stack;
  */
 public class CardDeck {
     
-    String spriteSheetFile;
     Stack<Card> cardDeck;
     
-    public CardDeck(String spriteSheetFile) {
-        
-        this.spriteSheetFile = spriteSheetFile;
+    public CardDeck() {
         
         generateCardDeck();
+        shuffleDeck();
     }
     
     public void generateCardDeck() {
@@ -31,99 +29,99 @@ public class CardDeck {
         cardDeck = new Stack();
         
         Card batCard = new Card("bat");
-        batCard.setCardImage(spriteSheetFile, 4, 0);
+        batCard.setCardImage("batCard.png");
         cardDeck.push(batCard);
         
         Card bugCard = new Card("bug");
-        bugCard.setCardImage(spriteSheetFile, 5, 0);
+        bugCard.setCardImage("beetleCard.png");
         cardDeck.push(bugCard);
         
         Card bookCard = new Card("book");
-        bookCard.setCardImage(spriteSheetFile, 6, 0);
+        bookCard.setCardImage("bookCard.png");
         cardDeck.push(bookCard);
         
         Card ringCard = new Card("ring");
-        ringCard.setCardImage(spriteSheetFile, 7, 0);
+        ringCard.setCardImage("ringCard.png");
         cardDeck.push(ringCard);
         
         Card skullCard = new Card("skull");
-        skullCard.setCardImage(spriteSheetFile, 8, 0);
+        skullCard.setCardImage("skullCard.png");
         cardDeck.push(skullCard);
         
         Card spiderCard = new Card("spider");
-        spiderCard.setCardImage(spriteSheetFile, 9, 0);
+        spiderCard.setCardImage("spiderCard.png");
         cardDeck.push(spiderCard);
         
         Card candleCard = new Card("candle");
-        candleCard.setCardImage(spriteSheetFile, 0, 1);
+        candleCard.setCardImage("candleCard.png");
         cardDeck.push(candleCard);
         
         Card crownCard = new Card("crown");
-        crownCard.setCardImage(spriteSheetFile, 1, 1);
+        crownCard.setCardImage("crownCard.png");
         cardDeck.push(crownCard);
         
         Card dragonCard = new Card("dragon");
-        dragonCard.setCardImage(spriteSheetFile, 2, 1);
+        dragonCard.setCardImage("dragonCard.png");
         cardDeck.push(dragonCard);
         
         Card lampCard = new Card("lamp");
-        lampCard.setCardImage(spriteSheetFile, 3, 1);
+        lampCard.setCardImage("lampCard.png");
         cardDeck.push(lampCard);
         
         Card ghostCard = new Card("ghost");
-        ghostCard.setCardImage(spriteSheetFile, 4, 1);
+        ghostCard.setCardImage("ghostCard.png");
         cardDeck.push(ghostCard);
         
         Card knightCard = new Card("knight");
-        knightCard.setCardImage(spriteSheetFile, 5, 1);
+        knightCard.setCardImage("helmetCard.png");
         cardDeck.push(knightCard);
         
         Card gemCard = new Card("gem");
-        gemCard.setCardImage(spriteSheetFile, 6, 1);
+        gemCard.setCardImage("jewelCard.png");
         cardDeck.push(gemCard);
         
         Card swordCard = new Card("sword");
-        swordCard.setCardImage(spriteSheetFile, 7, 1);
+        swordCard.setCardImage("swordCard.png");
         cardDeck.push(swordCard);
         
         Card chestCard = new Card("chest");
-        chestCard.setCardImage(spriteSheetFile, 8, 1);
+        chestCard.setCardImage("treasureCard.png");
         cardDeck.push(chestCard);
         
         Card orcCard = new Card("orc");
-        orcCard.setCardImage(spriteSheetFile, 9, 1);
+        orcCard.setCardImage("trollCard.png");
         cardDeck.push(orcCard);
         
         Card keyCard = new Card("key");
-        keyCard.setCardImage(spriteSheetFile, 0, 2);
+        keyCard.setCardImage("dragonCard.png");
         cardDeck.push(keyCard);
         
         Card lizardCard = new Card("lizard");
-        lizardCard.setCardImage(spriteSheetFile, 1, 2);
+        lizardCard.setCardImage("dragonCard.png");
         cardDeck.push(lizardCard);
         
         Card mapCard = new Card("map");
-        mapCard.setCardImage(spriteSheetFile, 2, 2);
+        mapCard.setCardImage("mapCard.png");
         cardDeck.push(mapCard);
         
         Card moneyCard = new Card("money");
-        moneyCard.setCardImage(spriteSheetFile, 3, 2);
+        moneyCard.setCardImage("moneyCard.png");
         cardDeck.push(moneyCard);
         
         Card mothCard = new Card("moth");
-        mothCard.setCardImage(spriteSheetFile, 4, 2);
+        mothCard.setCardImage("mothCard.png");
         cardDeck.push(mothCard);
         
         Card owlCard = new Card("owl");
-        owlCard.setCardImage(spriteSheetFile, 5, 2);
+        owlCard.setCardImage("owlCard.png");
         cardDeck.push(owlCard);
         
         Card mouseCard = new Card("mouse");
-        mouseCard.setCardImage(spriteSheetFile, 6, 2);
+        mouseCard.setCardImage("mouseCard.png");
         cardDeck.push(mouseCard);
         
         Card wizardCard = new Card("wizard");
-        wizardCard.setCardImage(spriteSheetFile, 7, 2);
+        wizardCard.setCardImage("wizardCard.png");
         cardDeck.push(wizardCard);
         
     }

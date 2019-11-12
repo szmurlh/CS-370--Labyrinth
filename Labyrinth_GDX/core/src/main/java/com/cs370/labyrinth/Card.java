@@ -34,12 +34,12 @@ public class Card {
         return cardImage;
     }
 
-    public void setCardImage(String spriteSheetFile, int x, int y) {
+    public void setCardImage(String spriteSheetFile) {
 
         spriteSheet = new Texture(spriteSheetFile);
         
         if(spriteSheet != null) {
-            Sprite cardImage = new Sprite(spriteSheet, 126 * x , 126 * y, 126, 126);
+            Sprite cardImage = new Sprite(spriteSheet, 2, 0, 232, 398);
             this.cardImage = cardImage;
         }
     }

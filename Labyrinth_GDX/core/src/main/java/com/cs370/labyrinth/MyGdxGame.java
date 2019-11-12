@@ -3,7 +3,6 @@ package com.cs370.labyrinth;
 import com.badlogic.gdx.ApplicationAdapter;
 import com.badlogic.gdx.Gdx;
 import com.badlogic.gdx.Input;
-import com.badlogic.gdx.Input.Keys;
 import com.badlogic.gdx.graphics.Camera;
 import com.badlogic.gdx.graphics.GL20;
 import com.badlogic.gdx.graphics.OrthographicCamera;
@@ -29,8 +28,9 @@ public class MyGdxGame extends ApplicationAdapter {
     private Board gameBoard;
     private CardDeck cardDeck;
     private ArrayList<Button> buttons;
+    private Player player;
 	
-	@Override
+    @Override
     public void create () {
         
         Gdx.graphics.setResizable(false);
@@ -38,7 +38,7 @@ public class MyGdxGame extends ApplicationAdapter {
 
         Skin skin = new Skin(Gdx.files.internal("glassy/skin/glassy-ui.json"));
         img = new Texture("spritesheet_small.png"); 
-        buttons = new ArrayList<Button>();
+        buttons = new ArrayList<>();
 
         
         //Create three buttons for shifting tiles up
@@ -240,25 +240,8 @@ public class MyGdxGame extends ApplicationAdapter {
                 return true;
             }
         });
-
-//        Button rotateBoardButton = new TextButton("Rotate Board", skin, "small");
-//        rotateBoardButton.setSize(300, 100);
-//        rotateBoardButton.setPosition(702, 50);
-//        rotateBoardButton.setTransform(true);
-//        rotateBoardButton.setScale(0.5f);
-//        rotateBoardButton.addListener(new InputListener(){
-//            @Override
-//            public void touchUp (InputEvent event, float x, float y, int pointer, int button) {
-//
-//                gameBoard.rotateBoard();
-//            }
-//            @Override
-//            public boolean touchDown (InputEvent event, float x, float y, int pointer, int button) {
-//                return true;
-//            }
-//        });
-
-
+        
+        
         //Create button for next tile rotation
         Button rotateNextTileButton = new TextButton("Rotate Tile", skin, "small");
         rotateNextTileButton.setSize(200, 50);
@@ -296,7 +279,10 @@ public class MyGdxGame extends ApplicationAdapter {
         
         //Initialize the game board and card deck
         gameBoard = new Board("spritesheet_small.png");
-        cardDeck = new CardDeck("spritesheet_small.png");
+        cardDeck = new CardDeck();
+        
+        //Initialize the player
+        player = new Player(new Sprite(new Texture("player.png")));
         
         Gdx.input.setInputProcessor(stage);
                                        
@@ -333,44 +319,44 @@ public class MyGdxGame extends ApplicationAdapter {
         
         Card nextCard = cardDeck.getCardDeck().peek();
         sprite = nextCard.getCardImage();
-        sprite.setBounds(210, 60, 128, 128);
+        sprite.setBounds(210, 60, 128, 200);
         sprite.draw(batch);
         
         //Discard current card and displays the next card when a player lands on
-        // a tile that has the matching item 
+        //  a tile that has the matching item 
         if(gameBoard.getPlayerLocation().getItem() != null && 
                 gameBoard.getPlayerLocation().getItem().equals(nextCard.getCardItem())) {
             cardDeck.getCardDeck().pop();
         }
+
+        if(Gdx.input.isKeyJustPressed(Input.Keys.LEFT))
+            gameBoard.canPlayerMoveLeft(gameBoard.getPlayerLocation(), true);
+		
+        if(Gdx.input.isKeyJustPressed(Input.Keys.RIGHT))
+            gameBoard.canPlayerMoveRight(gameBoard.getPlayerLocation(), true);
+		
+        if(Gdx.input.isKeyJustPressed(Input.Keys.UP))
+            gameBoard.canPlayerMoveUp(gameBoard.getPlayerLocation(), true);
+		
+        if(Gdx.input.isKeyJustPressed(Input.Keys.DOWN))
+            gameBoard.canPlayerMoveDown(gameBoard.getPlayerLocation(), true);
         
-        if(Gdx.input.isKeyPressed(Keys.UP)) {
-            Tile currentTile = gameBoard.getPlayerLocation();
-            gameBoard.canPlayerMoveUp(currentTile, true);
-            System.out.println(gameBoard.getPlayerLocation().getName());
-        }
-        else if(Gdx.input.isKeyPressed(Keys.LEFT)) {
-            Tile currentTile = gameBoard.getPlayerLocation();
-            gameBoard.canPlayerMoveLeft(currentTile, true);
-            System.out.println(gameBoard.getPlayerLocation().getName());
-        }
-        else if(Gdx.input.isKeyPressed(Keys.RIGHT)) {
-            Tile currentTile = gameBoard.getPlayerLocation();
-            gameBoard.canPlayerMoveRight(currentTile, true);
-            System.out.println(gameBoard.getPlayerLocation().getName());
-        }
-        else if(Gdx.input.isKeyPressed(Keys.DOWN)) {
-            Tile currentTile = gameBoard.getPlayerLocation();
-            gameBoard.canPlayerMoveDown(currentTile, true);
-            System.out.println(gameBoard.getPlayerLocation().getName());
-        }
+        Sprite currentTileImage = gameBoard.getPlayerLocation().getTileImage();
+        
+        player.setBounds(currentTileImage.getX() + 21, currentTileImage.getY() + 25, 20, 20);
+
+        player.setBounds(player.getX(),player.getY(), 20, 20);
+        
+        player.draw(batch);
         
         batch.end();
         stage.draw();
     } 
 	
-	@Override
-	public void dispose () {
-		batch.dispose();
-		img.dispose();
-	}
+    @Override
+    public void dispose () {
+        batch.dispose();
+	img.dispose();
+        player.getTexture().dispose();
+    }
 }
