@@ -44,6 +44,42 @@ public class Board {
         populateMovableTileGrid();
     }
     
+    public void printPaths() {
+        
+        Tile tile;
+        
+        for(int i = 0; i < 7; i++){
+            for(int j = 0; j < 7; j++) {
+                tile = grid[i][j];
+                System.out.println("--------------------------------------");
+                System.out.println("Paths for: " + tile.getName());
+                
+                if(canPlayerMoveLeft(tile, false)){
+                    Tile adjacentTile = grid[i][j-1];
+                    
+                    System.out.println(tile.getName() + " <==> " + adjacentTile.getName());
+                }
+                if(canPlayerMoveUp(tile, false)){
+                    Tile adjacentTile = grid[i+1][j];
+                    
+                    System.out.println(tile.getName() + " <==> " + adjacentTile.getName());
+                }
+                if(canPlayerMoveRight(tile, false)){
+                    Tile adjacentTile = grid[i][j+1];
+                    
+                    System.out.println(tile.getName() + " <==> " + adjacentTile.getName());
+                }
+                if(canPlayerMoveDown(tile, false)){
+                    Tile adjacentTile = grid[i-1][j];
+                    
+                    System.out.println(tile.getName() + " <==> " + adjacentTile.getName());
+                }
+                
+                System.out.println("--------------------------------------\n");
+            }
+        }
+    }
+    
     public Tile getPlayerLocation() {
         
         Tile tileWithPlayer = new Tile();

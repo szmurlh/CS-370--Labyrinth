@@ -285,6 +285,8 @@ public class MyGdxGame extends ApplicationAdapter {
         player = new Player(new Sprite(new Texture("player.png")));
         
         Gdx.input.setInputProcessor(stage);
+        
+        gameBoard.printPaths();
                                        
     }
 
