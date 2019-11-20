@@ -59,6 +59,7 @@ project(":core") {
         api "com.badlogicgames.gdx:gdx:$gdxVersion"
         api "com.badlogicgames.gdx:gdx-box2d:$gdxVersion"
         testCompile "junit:junit:$junitVersion"
+        compile 'io.socket:socket.io-client:1.0.0'
         
     }
 }
