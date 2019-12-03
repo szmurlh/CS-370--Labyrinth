@@ -21,9 +21,10 @@ public class Tile {
     private boolean leftPath;
     private boolean rightPath;
     
-    private boolean playerOnTile = false;
+    private String playerOnTile = "";
     private boolean fixedTile;
     private String item;
+    private int rotation = 0;
     
     private Sprite tileImage;
     
@@ -47,6 +48,11 @@ public class Tile {
         
         if(tileImage != null) {
             tileImage.rotate90(true);
+
+            rotation = rotation + 90;
+            if(rotation == 360) {
+                rotation = 0;
+            }
         }
     }
     
@@ -59,6 +65,24 @@ public class Tile {
         
         if(tileImage != null) {
             tileImage.rotate90(false);
+            
+            rotation = rotation - 90;
+            if(rotation == -360) {
+                rotation = 0;
+            }
+        }
+    }
+    
+    public void updateSpriteRotation(int rotation) {
+    
+        while(this.rotation != rotation) {
+            
+            if(rotation > this.rotation) {
+                rotateTileRight();
+            }
+            else if(rotation < this.rotation) {
+                rotateTileLeft();
+            }
         }
     }
     
@@ -121,11 +145,11 @@ public class Tile {
         }
     }
 
-    public boolean isPlayerOnTile() {
+    public String isPlayerOnTile() {
         return playerOnTile;
     }
 
-    public void setPlayerOnTile(boolean playerOnTile) {
+    public void setPlayerOnTile(String playerOnTile) {
         this.playerOnTile = playerOnTile;
     }
 
@@ -136,5 +160,13 @@ public class Tile {
     public void setName(String name) {
         this.name = name;
     }
-    
+
+    public int getRotation() {
+        return rotation;
+    }
+
+    public void setRotation(int rotation) {
+        this.rotation = rotation;
+    }
+
 }

@@ -44,6 +44,11 @@ public class Board {
         populateMovableTileGrid();
     }
     
+    public void updateTileLocations(int row, int col, Tile tile) {
+        
+        grid[row][col] = tile;
+    }
+    
     public void printPaths() {
         
         Tile tile;
@@ -51,25 +56,26 @@ public class Board {
         for(int i = 0; i < 7; i++){
             for(int j = 0; j < 7; j++) {
                 tile = grid[i][j];
+                System.out.println("\n" + tile.getName() + ": " + tile.getRotation() + "\n");
                 System.out.println("--------------------------------------");
                 System.out.println("Paths for: " + tile.getName());
                 
-                if(canPlayerMoveLeft(tile, false)){
+                if(canPlayerMoveLeft(tile, "")){
                     Tile adjacentTile = grid[i][j-1];
                     
                     System.out.println(tile.getName() + " <==> " + adjacentTile.getName());
                 }
-                if(canPlayerMoveUp(tile, false)){
+                if(canPlayerMoveUp(tile, "")){
                     Tile adjacentTile = grid[i+1][j];
                     
                     System.out.println(tile.getName() + " <==> " + adjacentTile.getName());
                 }
-                if(canPlayerMoveRight(tile, false)){
+                if(canPlayerMoveRight(tile, "")){
                     Tile adjacentTile = grid[i][j+1];
                     
                     System.out.println(tile.getName() + " <==> " + adjacentTile.getName());
                 }
-                if(canPlayerMoveDown(tile, false)){
+                if(canPlayerMoveDown(tile, "")){
                     Tile adjacentTile = grid[i-1][j];
                     
                     System.out.println(tile.getName() + " <==> " + adjacentTile.getName());
@@ -80,13 +86,13 @@ public class Board {
         }
     }
     
-    public Tile getPlayerLocation() {
+    public Tile getPlayerLocation(String player) {
         
         Tile tileWithPlayer = new Tile();
         Collection<Tile> tileHashMapValues = tiles.values();
         
         for(Tile tile: tileHashMapValues) {
-            if(tile.isPlayerOnTile()) {
+            if(tile.isPlayerOnTile().equals(player)) {
                 tileWithPlayer = tile;
             }
         }
@@ -94,7 +100,7 @@ public class Board {
         return tileWithPlayer;
     }
     
-    public boolean canPlayerMoveLeft(Tile currentTile, boolean movePlayer) {
+    public boolean canPlayerMoveLeft(Tile currentTile, String player) {
         
         int row = 0;
         int column = 0;
@@ -117,10 +123,9 @@ public class Board {
     
         if(currentTile.isLeftPath() && tileToMoveTo.isRightPath()) {
             
-            if(movePlayer == true) {
-                currentTile.setPlayerOnTile(false);
-                tileToMoveTo.setPlayerOnTile(true);
-            } 
+            currentTile.setPlayerOnTile("");
+            tileToMoveTo.setPlayerOnTile(player);
+            
             
             return true;
         }
@@ -128,7 +133,7 @@ public class Board {
         return false;
     }
     
-    public boolean canPlayerMoveRight(Tile currentTile, boolean movePlayer) {
+    public boolean canPlayerMoveRight(Tile currentTile, String player) {
         
         int row = 0;
         int column = 0;
@@ -150,11 +155,10 @@ public class Board {
         Tile tileToMoveTo = grid[row][column + 1];
         
         if(currentTile.isRightPath() && tileToMoveTo.isLeftPath()) {
-            
-            if(movePlayer == true) {
-                currentTile.setPlayerOnTile(false);
-                tileToMoveTo.setPlayerOnTile(true);
-            } 
+
+            currentTile.setPlayerOnTile("");
+            tileToMoveTo.setPlayerOnTile(player);
+
             
             return true;
         }
@@ -162,7 +166,7 @@ public class Board {
         return false;
     }
     
-    public boolean canPlayerMoveUp(Tile currentTile, boolean movePlayer) {
+    public boolean canPlayerMoveUp(Tile currentTile, String player) {
         
         int row = 0;
         int column = 0;
@@ -184,11 +188,9 @@ public class Board {
         Tile tileToMoveTo = grid[row + 1][column];
         
         if(currentTile.isTopPath() && tileToMoveTo.isBottomPath()) {
-            
-            if(movePlayer == true) {
-                currentTile.setPlayerOnTile(false);
-                tileToMoveTo.setPlayerOnTile(true);
-            }
+                
+            currentTile.setPlayerOnTile("");
+            tileToMoveTo.setPlayerOnTile(player);
             
             return true;
         }
@@ -196,7 +198,7 @@ public class Board {
         return false;
     }
     
-    public boolean canPlayerMoveDown(Tile currentTile, boolean movePlayer) {
+    public boolean canPlayerMoveDown(Tile currentTile, String player) {
         
         int row = 0;
         int column = 0;
@@ -218,11 +220,10 @@ public class Board {
         Tile tileToMoveTo = grid[row - 1][column];
         
         if(currentTile.isBottomPath() && tileToMoveTo.isTopPath()) {
-            
-            if(movePlayer == true) {
-                currentTile.setPlayerOnTile(false);
-                tileToMoveTo.setPlayerOnTile(true);
-            }    
+
+            currentTile.setPlayerOnTile("");
+            tileToMoveTo.setPlayerOnTile(player);
+   
             
             return true;
         }
@@ -256,9 +257,9 @@ public class Board {
         grid[0][col] = nextTile;
       
         //send the player to the other side of the board
-        if(poppedTile.isPlayerOnTile()) {
-            poppedTile.setPlayerOnTile(false);
-            nextTile.setPlayerOnTile(true);
+        if(!poppedTile.isPlayerOnTile().equals("")) {
+            nextTile.setPlayerOnTile(poppedTile.isPlayerOnTile());
+            poppedTile.setPlayerOnTile("");
         }
         
         nextTile = poppedTile; 
@@ -283,9 +284,9 @@ public class Board {
         grid[6][col] = nextTile;
         
         //send the player to the other side of the board
-        if(poppedTile.isPlayerOnTile()) {
-            poppedTile.setPlayerOnTile(false);
-            nextTile.setPlayerOnTile(true);
+        if(!poppedTile.isPlayerOnTile().equals("")) {
+            nextTile.setPlayerOnTile(poppedTile.isPlayerOnTile());
+            poppedTile.setPlayerOnTile("");
         }
         
         nextTile = poppedTile; 
@@ -309,9 +310,9 @@ public class Board {
         grid[row][0] = nextTile;
         
         //send the player to the other side of the board
-        if(poppedTile.isPlayerOnTile()) {
-            poppedTile.setPlayerOnTile(false);
-            nextTile.setPlayerOnTile(true);
+        if(!poppedTile.isPlayerOnTile().equals("")) {
+            nextTile.setPlayerOnTile(poppedTile.isPlayerOnTile());
+            poppedTile.setPlayerOnTile("");
         }
         
         nextTile = poppedTile;
@@ -335,9 +336,9 @@ public class Board {
         grid[row][6] = nextTile;
         
         //send the player to the other side of the board
-        if(poppedTile.isPlayerOnTile()) {
-            poppedTile.setPlayerOnTile(false);
-            nextTile.setPlayerOnTile(true);
+        if(!poppedTile.isPlayerOnTile().equals("")) {
+            nextTile.setPlayerOnTile(poppedTile.isPlayerOnTile());
+            poppedTile.setPlayerOnTile("");
         }
         
         nextTile = poppedTile;
@@ -575,7 +576,6 @@ public class Board {
         blueTile.setFixedTile(true);
         blueTile.setTileImage(spriteSheet, 0, 0); 
         blueTile.setName("blueTile");
-        blueTile.setPlayerOnTile(true);
 
         tiles.put("blueTile", blueTile);
         
@@ -842,6 +842,15 @@ public class Board {
     
     public Tile getNextTile() {
         return nextTile;
+    }
+    
+    public void setNextTile(String name, int rotation, String playerOnTile) {
+        
+        Tile tile = (Tile) tiles.get(name);
+        tile.updateSpriteRotation(rotation);
+        tile.setPlayerOnTile(playerOnTile);
+        
+        this.nextTile = tile;
     }
 
     public HashMap getTiles() {

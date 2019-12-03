@@ -1,22 +1,32 @@
 package com.cs370.labyrinth;
 
 import com.badlogic.gdx.Gdx;
-import com.badlogic.gdx.Input;
-import com.badlogic.gdx.Input.Keys;
 import com.badlogic.gdx.InputProcessor;
 import com.badlogic.gdx.graphics.g2d.Sprite;
 import com.badlogic.gdx.graphics.g2d.SpriteBatch;
-import com.badlogic.gdx.math.Vector2;
 
 public class Player extends Sprite implements InputProcessor{
 	
 	float spriteYposition;
 	float spriteXposition;
+        String name;
+        boolean turn;
+        String id;
 
 	
 	public Player(Sprite sprite) {
-		super(sprite);
-		}
+            
+            super(sprite);
+	}
+        
+        public Player(Sprite sprite, String name, boolean turn, String id) {
+            
+            super(sprite);
+                
+            this.name = name;
+            this.turn = turn;
+            this.id = id;
+	}
 	
 	public void draw (SpriteBatch spriteBatch) {
 		update(Gdx.graphics.getDeltaTime());
