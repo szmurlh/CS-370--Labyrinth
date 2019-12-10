@@ -35,17 +35,24 @@ public class MyGdxGame extends ApplicationAdapter {
     private Board gameBoard;
     private CardDeck cardDeck;
     private ArrayList<Button> buttons;
-    private Player player;
     private Socket socket;
     private int playerCount;
-    private HashMap<String, Player> allPlayers = new HashMap();
-    private Sprite playerSprite;
+    private ArrayList <Player> allPlayers = new ArrayList();
+    private Sprite player1Sprite;
+    private Sprite player2Sprite;
+    private Sprite player3Sprite;
+    private Sprite player4Sprite;
     private String myPlayer;
+    private boolean tileInserted;
 	
     @Override
     public void create () {
         
-        playerSprite = new Sprite(new Texture("player.png"));
+        //create player sprites
+        player1Sprite = new Sprite(new Texture("player1.png"));
+        player2Sprite = new Sprite(new Texture("player2.png"));
+        player3Sprite = new Sprite(new Texture("player3.png"));
+        player4Sprite = new Sprite(new Texture("player4.png"));
         
         Gdx.graphics.setResizable(false);
         Gdx.graphics.setWindowedMode(1000, 640);
@@ -70,9 +77,11 @@ public class MyGdxGame extends ApplicationAdapter {
         button1.addListener(new InputListener(){
             @Override
             public void touchUp (InputEvent event, float x, float y, int pointer, int button) {
-
-                gameBoard.pushTileUp(1);
-                updateGameState();
+                if(!tileInserted) {
+                    gameBoard.pushTileUp(1);
+                    tileInserted = true;
+                    updateGameState();
+                }
             }
             @Override
             public boolean touchDown (InputEvent event, float x, float y, int pointer, int button) {
@@ -84,9 +93,11 @@ public class MyGdxGame extends ApplicationAdapter {
         button2.addListener(new InputListener(){
             @Override
             public void touchUp (InputEvent event, float x, float y, int pointer, int button) {
-
-                gameBoard.pushTileUp(3);
-                updateGameState();
+                if(!tileInserted) {
+                    gameBoard.pushTileUp(3);
+                    tileInserted = true;
+                    updateGameState();
+                }
             }
             @Override
             public boolean touchDown (InputEvent event, float x, float y, int pointer, int button) {
@@ -98,9 +109,11 @@ public class MyGdxGame extends ApplicationAdapter {
         button3.addListener(new InputListener(){
             @Override
             public void touchUp (InputEvent event, float x, float y, int pointer, int button) {
-
-                gameBoard.pushTileUp(5);
-                updateGameState();
+                if(!tileInserted) {
+                    gameBoard.pushTileUp(5);
+                    tileInserted = true;
+                    updateGameState();
+                }
             }
             @Override
             public boolean touchDown (InputEvent event, float x, float y, int pointer, int button) {
@@ -124,9 +137,11 @@ public class MyGdxGame extends ApplicationAdapter {
         Button button4 = buttons.get(3);
         button4.addListener(new InputListener(){
             public void touchUp (InputEvent event, float x, float y, int pointer, int button) {
-
-                gameBoard.pushTileDown(1);
-                updateGameState();
+                if(!tileInserted) {
+                    gameBoard.pushTileDown(1);
+                    tileInserted = true;
+                    updateGameState();
+                }
             }
             public boolean touchDown (InputEvent event, float x, float y, int pointer, int button) {
                 return true;
@@ -137,9 +152,11 @@ public class MyGdxGame extends ApplicationAdapter {
         button5.addListener(new InputListener(){
             @Override
             public void touchUp (InputEvent event, float x, float y, int pointer, int button) {
-
-                gameBoard.pushTileDown(3);
-                updateGameState();
+                if(!tileInserted) {
+                    gameBoard.pushTileDown(3);
+                    tileInserted = true;
+                    updateGameState();
+                }
             }
             @Override
             public boolean touchDown (InputEvent event, float x, float y, int pointer, int button) {
@@ -151,9 +168,11 @@ public class MyGdxGame extends ApplicationAdapter {
         button6.addListener(new InputListener(){
             @Override
             public void touchUp (InputEvent event, float x, float y, int pointer, int button) {
-
-                gameBoard.pushTileDown(5);
-                updateGameState();
+                if(!tileInserted) {
+                    gameBoard.pushTileDown(5);
+                    tileInserted = true;
+                    updateGameState();
+                }
             }
             @Override
             public boolean touchDown (InputEvent event, float x, float y, int pointer, int button) {
@@ -177,9 +196,11 @@ public class MyGdxGame extends ApplicationAdapter {
         Button button7 = buttons.get(6);
         button7.addListener(new InputListener(){
             public void touchUp (InputEvent event, float x, float y, int pointer, int button) {
-
-                gameBoard.pushTileRight(1);
-                updateGameState();
+                if(!tileInserted) {
+                    gameBoard.pushTileRight(1);
+                    tileInserted = true;
+                    updateGameState();
+                }
             }
             public boolean touchDown (InputEvent event, float x, float y, int pointer, int button) {
                 return true;
@@ -190,9 +211,11 @@ public class MyGdxGame extends ApplicationAdapter {
         button8.addListener(new InputListener(){
             @Override
             public void touchUp (InputEvent event, float x, float y, int pointer, int button) {
-
-                gameBoard.pushTileRight(3);
-                updateGameState();
+                if(!tileInserted) {
+                    gameBoard.pushTileRight(3);
+                    tileInserted = true;
+                    updateGameState();
+                }
             }
             @Override
             public boolean touchDown (InputEvent event, float x, float y, int pointer, int button) {
@@ -204,9 +227,11 @@ public class MyGdxGame extends ApplicationAdapter {
         button9.addListener(new InputListener(){
             @Override
             public void touchUp (InputEvent event, float x, float y, int pointer, int button) {
-
-                gameBoard.pushTileRight(5);
-                updateGameState();
+                if(!tileInserted) {
+                    gameBoard.pushTileRight(5);
+                    tileInserted = true;
+                    updateGameState();
+                }
             }
             @Override
             public boolean touchDown (InputEvent event, float x, float y, int pointer, int button) {
@@ -230,9 +255,11 @@ public class MyGdxGame extends ApplicationAdapter {
         Button button10 = buttons.get(9);
         button10.addListener(new InputListener(){
             public void touchUp (InputEvent event, float x, float y, int pointer, int button) {
-
-                gameBoard.pushTileLeft(1);
-                updateGameState();
+                if(!tileInserted) {
+                    gameBoard.pushTileLeft(1);
+                    tileInserted = true;
+                    updateGameState();
+                }
             }
             public boolean touchDown (InputEvent event, float x, float y, int pointer, int button) {
                 return true;
@@ -243,9 +270,11 @@ public class MyGdxGame extends ApplicationAdapter {
         button11.addListener(new InputListener(){
             @Override
             public void touchUp (InputEvent event, float x, float y, int pointer, int button) {
-
-                gameBoard.pushTileLeft(3);
-                updateGameState();
+                if(!tileInserted) {
+                    gameBoard.pushTileLeft(3);
+                    tileInserted = true;
+                    updateGameState();
+                }
             }
             @Override
             public boolean touchDown (InputEvent event, float x, float y, int pointer, int button) {
@@ -257,9 +286,11 @@ public class MyGdxGame extends ApplicationAdapter {
         button12.addListener(new InputListener(){
             @Override
             public void touchUp (InputEvent event, float x, float y, int pointer, int button) {
-
-                gameBoard.pushTileLeft(5);
-                updateGameState();
+                if(!tileInserted) {
+                    gameBoard.pushTileLeft(5);
+                    tileInserted = true;
+                    updateGameState();
+                }
             }
             @Override
             public boolean touchDown (InputEvent event, float x, float y, int pointer, int button) {
@@ -277,7 +308,7 @@ public class MyGdxGame extends ApplicationAdapter {
         rotateNextTileButton.addListener(new InputListener(){
             @Override
             public void touchUp (InputEvent event, float x, float y, int pointer, int button) {
-
+                
                 gameBoard.getNextTile().rotateTileRight();
                 updateGameState();
             }
@@ -300,16 +331,12 @@ public class MyGdxGame extends ApplicationAdapter {
             stage.addActor(buttons.get(i));
         }
         
-        //stage.addActor(rotateBoardButton);
         stage.addActor(rotateNextTileButton);
         cam = new OrthographicCamera(1000, 640);
         
         //Initialize the game board and card deck
         gameBoard = new Board("spritesheet_small.png");
         cardDeck = new CardDeck();
-        
-        //Initialize the player
-        player = new Player(new Sprite(new Texture("player.png")));
         
         Gdx.input.setInputProcessor(stage);
         
@@ -365,10 +392,22 @@ public class MyGdxGame extends ApplicationAdapter {
                                 
                             case 2:
                                 
+                                JSONObject jsonDataP3 = new JSONObject();
+                                jsonDataP3.put("name", "player3");
+                                jsonDataP3.put("turn", false);
+                                myPlayer = "player3";
+
+                                socket.emit("joinSession", jsonDataP3);
                                 break;
                                 
                             case 3:
                                 
+                                JSONObject jsonDataP4 = new JSONObject();
+                                jsonDataP4.put("name", "player4");
+                                jsonDataP4.put("turn", false);
+                                myPlayer = "player4";
+
+                                socket.emit("joinSession", jsonDataP4);
                                 break;
                         }
                         
@@ -381,45 +420,51 @@ public class MyGdxGame extends ApplicationAdapter {
                 @Override
                 public void call(Object... os) {
                     try {
+                        
                         JSONArray data = (JSONArray) os[0];
-                        HashMap<String, Player> updatedPlayers = new HashMap();
+                        ArrayList <Player> updatedPlayers = new ArrayList();
                         
                         for(int i = 0; i < data.length(); i++) {
+                            
                             JSONObject player = data.getJSONObject(i);
                             String playerName = player.getString("name");
                             boolean playerTurn = player.getBoolean("turn");
                             String playerID = player.getString("id");
                             
-                            updatedPlayers.put(playerID, new Player(playerSprite, playerName, playerTurn, playerID));
+                            switch(i) {
+                                case 0:
+                                    updatedPlayers.add(new Player(player1Sprite, playerName, playerTurn, playerID));
+                                    Tile blueTile = (Tile) gameBoard.getTiles().get("blueTile");
+                                    blueTile.setPlayerOnTile("player1");
+                                    break;
+                                
+                                case 1:
+                                    updatedPlayers.add(new Player(player2Sprite, playerName, playerTurn, playerID));
+                                    Tile greenTile = (Tile) gameBoard.getTiles().get("greenTile");
+                                    greenTile.setPlayerOnTile("player2");
+                                    break;
+                                    
+                                case 2:
+                                    updatedPlayers.add(new Player(player3Sprite, playerName, playerTurn, playerID));
+                                    Tile redTile = (Tile) gameBoard.getTiles().get("redTile");
+                                    redTile.setPlayerOnTile("player3");
+                                    break;
+                                    
+                                case 3:
+                                    updatedPlayers.add(new Player(player4Sprite, playerName, playerTurn, playerID));
+                                    Tile yellowTile = (Tile) gameBoard.getTiles().get("yellowTile");
+                                    yellowTile.setPlayerOnTile("player4");
+                                    break;
+                            }
                         }
                         
                         allPlayers = updatedPlayers;
-                        
-                        for(int i = 0; i < allPlayers.size(); i++) {
-                            switch(i) {
-                                case 1:
-                                    Tile blueTile = (Tile) gameBoard.getTiles().get("blueTile");
-                                    blueTile.setPlayerOnTile("player1");
-                                    
-                                case 2:
-                                    Tile greenTile = (Tile) gameBoard.getTiles().get("greenTile");
-                                    greenTile.setPlayerOnTile("player2");
-                                 
-                                case 3:
-                                    Tile redTile = (Tile) gameBoard.getTiles().get("redTile");
-                                    redTile.setPlayerOnTile("player3");
-                                    
-                                case 4:
-                                    Tile yellowTile = (Tile) gameBoard.getTiles().get("yellowTile");
-                                    yellowTile.setPlayerOnTile("player4");
-                            }
-                        }
                         
                         if(myPlayer.equals("player1")) {   
                             
                             updateGameState();
                         }
-                        System.out.println(allPlayers);
+
                     } catch(JSONException e) {
                         Gdx.app.log("SocketIO", "Error Getting New Player ID");
                     }
@@ -430,8 +475,15 @@ public class MyGdxGame extends ApplicationAdapter {
                     try {
                         JSONObject data = (JSONObject) os[0];
                         String id = data.getString("id");
-                        allPlayers.remove(id);
-                        System.out.println(allPlayers);
+                        
+                        for(Player player: allPlayers) {
+                            
+                            if(player.getId().equals(id)) {
+                                allPlayers.remove(player);
+                                break;
+                            }
+                        }
+                        System.out.println("AllPlayers: " + allPlayers);
                     } catch(JSONException e) {
                         Gdx.app.log("SocketIO", "Error Getting New Player ID");
                     }
@@ -472,14 +524,21 @@ public class MyGdxGame extends ApplicationAdapter {
                         Gdx.app.log("SocketIO", "Error Updating Board State");
                     }
                 }
-            }).on("updatePlayerPosition", new Emitter.Listener() {
+            }).on("updateTurns", new Emitter.Listener() {
                 @Override
                 public void call(Object... os) {
-//                    try {
+                    try {
+                        JSONArray playerDataArray = (JSONArray) os[0];
                         
-//                    } catch(JSONException e) {
-//                        Gdx.app.log("SocketIO", "Error Updating Board State");
-//                    }
+                        for(int i = 0; i < allPlayers.size(); i++) {
+                            Player player = allPlayers.get(i);
+                            JSONObject playerJSON = playerDataArray.getJSONObject(i);
+                            player.setTurn(playerJSON.getBoolean("turn"));
+                        }
+                        
+                    } catch(JSONException e) {
+                        Gdx.app.log("SocketIO", "Error Updating Board State");
+                    }
                 }
             });
         }
@@ -490,6 +549,7 @@ public class MyGdxGame extends ApplicationAdapter {
             JSONArray gameData = new JSONArray();
             JSONArray boardData = new JSONArray();
             JSONObject nextTile = new JSONObject();
+            JSONArray players = new JSONArray();
             
             for(int i = 0; i < 7; i++) {
                 for(int j = 0; j < 7; j++) {
@@ -506,14 +566,24 @@ public class MyGdxGame extends ApplicationAdapter {
                     boardData.put(tileData);
                 }
             }
+            
             nextTile.put("name", gameBoard.getNextTile().getName());
             nextTile.put("rotation", gameBoard.getNextTile().getRotation());
             nextTile.put("playerOnTile", gameBoard.getNextTile().isPlayerOnTile());
+            
+            for(Player player: allPlayers) {
+                JSONObject playerJSON = new JSONObject();
+                playerJSON.put("name", player.getName());
+                playerJSON.put("turn", player.isTurn());
+                
+                players.put(playerJSON);
+            }
             
             gameData.put(boardData);
             gameData.put(nextTile);
             
             socket.emit("updateBoardState", gameData);
+            socket.emit("updatePlayerTurn", players);
             
         } catch(JSONException e) {
             Gdx.app.log("SocketIO", "Error Getting Updating the Game State");
@@ -561,25 +631,53 @@ public class MyGdxGame extends ApplicationAdapter {
 //            cardDeck.getCardDeck().pop();
 //        }
 //
-//        if(Gdx.input.isKeyJustPressed(Input.Keys.LEFT))
-//            gameBoard.canPlayerMoveLeft(gameBoard.getPlayerLocation(), true);
-//		
-//        if(Gdx.input.isKeyJustPressed(Input.Keys.RIGHT))
-//            gameBoard.canPlayerMoveRight(gameBoard.getPlayerLocation(), true);
-//		
-//        if(Gdx.input.isKeyJustPressed(Input.Keys.UP))
-//            gameBoard.canPlayerMoveUp(gameBoard.getPlayerLocation(), true);
-//		
-//        if(Gdx.input.isKeyJustPressed(Input.Keys.DOWN))
-//            gameBoard.canPlayerMoveDown(gameBoard.getPlayerLocation(), true);
-//        
-//        Sprite currentTileImage = gameBoard.getPlayerLocation().getTileImage();
-        
-//        player.setBounds(currentTileImage.getX() + 21, currentTileImage.getY() + 25, 20, 20);
+    for(Player player: allPlayers) {
+        if(player.isTurn() && player.getName().equals(myPlayer)) {
 
-        player.setBounds(player.getX(),player.getY(), 20, 20);
+            if(Gdx.input.isKeyJustPressed(Input.Keys.LEFT)) {
+                gameBoard.canPlayerMoveLeft(gameBoard.getPlayerLocation(player.getName()), player.getName());
+                updateGameState();
+            }
+            if(Gdx.input.isKeyJustPressed(Input.Keys.RIGHT)) {
+                gameBoard.canPlayerMoveRight(gameBoard.getPlayerLocation(player.getName()), player.getName());
+                updateGameState();
+            }
+
+            if(Gdx.input.isKeyJustPressed(Input.Keys.UP)) {
+                gameBoard.canPlayerMoveUp(gameBoard.getPlayerLocation(player.getName()), player.getName());
+                updateGameState();
+            }
+            if(Gdx.input.isKeyJustPressed(Input.Keys.DOWN)) {
+                gameBoard.canPlayerMoveDown(gameBoard.getPlayerLocation(player.getName()), player.getName());
+                updateGameState();
+            }
+            if(Gdx.input.isKeyJustPressed(Input.Keys.ENTER)) {
+                player.setTurn(false);
+                int index = allPlayers.indexOf(player);
+
+                if(index != 3) {
+                    allPlayers.get(index + 1).setTurn(true);
+                } else {
+                    allPlayers.get(0).setTurn(true);
+                }
+                tileInserted = false;
+                updateGameState();
+            }
+        }
+    }
         
-        player.draw(batch);
+        if(!allPlayers.isEmpty()){
+            for(Player player: allPlayers) {
+                
+                Sprite currentTileImage = gameBoard.getPlayerLocation(player.getName()).getTileImage();
+                
+                player.setBounds(currentTileImage.getX() + 21, currentTileImage.getY() + 25, 20, 20);
+
+                player.setBounds(player.getX(),player.getY(), 20, 20);
+
+                player.draw(batch);
+            }
+        }
         
         batch.end();
         stage.draw();
@@ -589,6 +687,5 @@ public class MyGdxGame extends ApplicationAdapter {
     public void dispose () {
         batch.dispose();
 	img.dispose();
-        player.getTexture().dispose();
     }
 }
